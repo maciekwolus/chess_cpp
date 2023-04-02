@@ -20,6 +20,7 @@ set(PROJECT_SOURCES
         gamewindow.cpp
         gamewindow.h
         gamewindow.ui
+        resource.qrc
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
