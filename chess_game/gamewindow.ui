@@ -52,6 +52,42 @@
     <string>Restart game</string>
    </property>
   </widget>
+  <widget class="QLabel" name="WRook1_pic">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>800</y>
+     <width>100</width>
+     <height>100</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="WRook2_pic">
+   <property name="geometry">
+    <rect>
+     <x>800</x>
+     <y>800</y>
+     <width>100</width>
+     <height>100</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QGraphicsView" name="graphicsView">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>100</y>
+     <width>802</width>
+     <height>802</height>
+    </rect>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

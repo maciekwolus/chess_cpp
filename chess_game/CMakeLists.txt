@@ -21,6 +21,8 @@ set(PROJECT_SOURCES
         gamewindow.h
         gamewindow.ui
         resource.qrc
+        pieceonboard.cpp
+        pieceonboard.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
