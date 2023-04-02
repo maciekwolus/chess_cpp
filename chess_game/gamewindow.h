@@ -22,7 +22,7 @@ public:
 private:
     Ui::GameWindow *ui;
     QGraphicsScene *Scene;
-    QList<pieceOnBoard *> piecesOnBoardList;
+    QList<pieceOnBoard *>  piecesOnBoardList;
 
     void board_setup(); //showing the board
     void pieces_setup(); //showing the pieces at the begining

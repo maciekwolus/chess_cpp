@@ -11,9 +11,10 @@ class pieceOnBoard : public QObject
 {
     Q_OBJECT
 public:
-    pieceOnBoard(int x, int y, QString d, QGraphicsScene *s);
+    pieceOnBoard(int x, int y, bool w, QString d, QGraphicsScene *s);
 private:
     int xCoord, yCoord;
+    bool white;
     QString dir;
     QGraphicsPixmapItem *image;
 
