@@ -11,6 +11,12 @@ namespace Ui {
 class GameWindow;
 }
 
+enum Color
+{
+    WHITE,
+    BLACK
+};
+
 class GameWindow : public QDialog
 {
     Q_OBJECT
