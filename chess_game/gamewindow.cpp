@@ -12,6 +12,7 @@ GameWindow::GameWindow(QWidget *parent) :
     ui->setupUi(this);
     board_setup();
     pieces_setup();
+    piecesOnBoardList.first()->updatePieceCoordinates(400,400);
 }
 
 void GameWindow::board_setup()
@@ -64,6 +65,12 @@ void GameWindow::pieces_setup()
     piecesOnBoardList.append(new pieceOnBoard(400,700,WHITE, QString(":/resources/img/white_king.png"), Scene));
     piecesOnBoardList.append(new pieceOnBoard(400,0  ,BLACK,QString(":/resources/img/black_king.png"), Scene));
 }
+
+void GameWindow::grabPiece(QMouseEvent *event)
+{
+    //GameWindow::mousePressEvent(event);
+}
+
 
 GameWindow::~GameWindow()
 {

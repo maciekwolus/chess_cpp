@@ -25,13 +25,14 @@ public:
     explicit GameWindow(QWidget *parent = nullptr);
     ~GameWindow();
 
+    void board_setup(); //showing the board
+    void pieces_setup(); //showing the pieces at the begining
+    void grabPiece(QMouseEvent *event);
+
 private:
     Ui::GameWindow *ui;
     QGraphicsScene *Scene;
     QList<pieceOnBoard *>  piecesOnBoardList;
-
-    void board_setup(); //showing the board
-    void pieces_setup(); //showing the pieces at the begining
 };
 
 #endif // GAMEWINDOW_H

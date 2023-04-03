@@ -6,18 +6,19 @@
 #include <QString>
 #include <QPixmap>
 #include <QGraphicsScene>
+#include <QGraphicsSceneMouseEvent>
 
 class pieceOnBoard : public QObject
 {
     Q_OBJECT
 public:
+    //CONSTRUCTOR
     pieceOnBoard(int x, int y, int c, QString d, QGraphicsScene *s);
-private:
-    int xCoord, yCoord;
-    int color;
-    QString dir;
-    QGraphicsPixmapItem *image;
+    void updatePieceCoordinates(int xCoord, int yCoord);
 
+private:
+    int xCoord, yCoord, color;
+    QGraphicsPixmapItem *image;
 
 signals:
 
