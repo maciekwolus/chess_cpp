@@ -31,8 +31,8 @@ public:
 
 private:
     Ui::GameWindow *ui;
-    QGraphicsScene *Scene;
-    QList<pieceOnBoard *>  piecesOnBoardList;
+    QGraphicsScene *Scene; //scene of board
+    QList<pieceOnBoard *>  piecesOnBoardList; //list of pieces (frontend)
 };
 
 #endif // GAMEWINDOW_H

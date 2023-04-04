@@ -13,10 +13,15 @@ GameWindow::GameWindow(QWidget *parent) :
     board_setup();
     //pieces_setup();
 
-    pieceOnBoard pionek(0,600,WHITE,QString(":/resources/img/white_pawn.png"), Scene);
+    //DEBUGGING BELOW
+
+    //pieceOnBoard pionek(0,600,WHITE,QString(":/resources/img/white_pawn.png"), Scene);
     //pionek.image->setPos(500,500);
+
     //piecesOnBoardList.append(new pieceOnBoard(0,  600,WHITE,QString(":/resources/img/white_pawn.png"), Scene));
     //piecesOnBoardList.first()->getImage()->setPos(400,400);
+
+    //pieceOnBoard *myPiece = new pieceOnBoard(100, 200, 1, ":/resources/img/white_pawn.png", Scene);
     qDebug() << "dupa1";
 }
 
