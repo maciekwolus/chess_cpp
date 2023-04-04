@@ -11,7 +11,7 @@ pieceOnBoard::pieceOnBoard(int x, int y, int c, QString d, QGraphicsScene *s)
     image = new QGraphicsPixmapItem(QPixmap(QString(d)));
 
     // Set flags and position for image
-    image->setFlags(QGraphicsItem::ItemIsMovable);
+    image->setFlags(QGraphicsItem::ItemIsMovable); // allow to move pieces
     image->setPos(xCoord, yCoord);
 
     // Add image to scene
@@ -20,10 +20,6 @@ pieceOnBoard::pieceOnBoard(int x, int y, int c, QString d, QGraphicsScene *s)
 
 void pieceOnBoard::movePiecePicture(int x, int y)
 {
-    // Set new coordinates
-    //xCoord = x;
-    //yCoord = y;
-
     // Move image to new position
     if (image != nullptr) {
         image->setPos(x, y);

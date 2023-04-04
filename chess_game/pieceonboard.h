@@ -13,16 +13,12 @@ class pieceOnBoard : public QObject
 {
     Q_OBJECT
 public:
-    //CONSTRUCTOR
-    pieceOnBoard(int x, int y, int c, QString d, QGraphicsScene *s);
-    void movePiecePicture(int x, int y);
-
-    //TODO change below to private after the error is handled
-    int xCoord, yCoord, color;
-    QGraphicsPixmapItem *image;
+    pieceOnBoard(int x, int y, int c, QString d, QGraphicsScene *s); // constructor
+    void movePiecePicture(int x, int y); // function to move the graphic of piece
 
 private:
-
+    int xCoord, yCoord, color; // obvious variables
+    QGraphicsPixmapItem *image; // visual representation of piece
 
 signals:
 
