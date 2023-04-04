@@ -10,24 +10,21 @@ GameWindow::GameWindow(QWidget *parent) :
     ui(new Ui::GameWindow)
 {
     ui->setupUi(this);
+
+    // prepare game setup
     board_setup();
-    //pieces_setup();
+    pieces_setup();
 
-    //DEBUGGING BELOW
+    // move of first piece
+    piecesOnBoardList.first()->movePiecePicture(500, 400);
 
-    //pieceOnBoard pionek(0,600,WHITE,QString(":/resources/img/white_pawn.png"), Scene);
-    //pionek.image->setPos(500,500);
 
-    //piecesOnBoardList.append(new pieceOnBoard(0,  600,WHITE,QString(":/resources/img/white_pawn.png"), Scene));
-    //piecesOnBoardList.first()->getImage()->setPos(400,400);
 
-    //pieceOnBoard *myPiece = new pieceOnBoard(100, 200, 1, ":/resources/img/white_pawn.png", Scene);
-    qDebug() << "dupa1";
 }
 
 void GameWindow::board_setup()
 {
-    //SHOW THE BOARD
+    // SHOW THE BOARD
     Scene = new QGraphicsScene(this);
     Scene->addPixmap(QPixmap(":/resources/img/board.png"));
     ui->graphicsView->setScene(Scene);
@@ -35,8 +32,8 @@ void GameWindow::board_setup()
 
 void GameWindow::pieces_setup()
 {
-    //CREATING LIST OF PIECES PICTURES
-    //pawns
+    // CREATING LIST OF PIECES PICTURES
+    // pawns
     piecesOnBoardList.append(new pieceOnBoard(0,  600,WHITE,QString(":/resources/img/white_pawn.png"), Scene));
     piecesOnBoardList.append(new pieceOnBoard(100,600,WHITE,QString(":/resources/img/white_pawn.png"), Scene));
     piecesOnBoardList.append(new pieceOnBoard(200,600,WHITE,QString(":/resources/img/white_pawn.png"), Scene));
@@ -53,25 +50,25 @@ void GameWindow::pieces_setup()
     piecesOnBoardList.append(new pieceOnBoard(500,100,BLACK,QString(":/resources/img/black_pawn.png"), Scene));
     piecesOnBoardList.append(new pieceOnBoard(600,100,BLACK,QString(":/resources/img/black_pawn.png"), Scene));
     piecesOnBoardList.append(new pieceOnBoard(700,100,BLACK,QString(":/resources/img/black_pawn.png"), Scene));
-    //knights
+    // knights
     piecesOnBoardList.append(new pieceOnBoard(100,700,WHITE,QString(":/resources/img/white_knight.png"), Scene));
     piecesOnBoardList.append(new pieceOnBoard(600,700,WHITE,QString(":/resources/img/white_knight.png"), Scene));
     piecesOnBoardList.append(new pieceOnBoard(100,0  ,BLACK,QString(":/resources/img/black_knight.png"), Scene));
     piecesOnBoardList.append(new pieceOnBoard(600,0  ,BLACK,QString(":/resources/img/black_knight.png"), Scene));
-    //rooks
+    // rooks
     piecesOnBoardList.append(new pieceOnBoard(0  ,700,WHITE,QString(":/resources/img/white_rook.png"), Scene));
     piecesOnBoardList.append(new pieceOnBoard(700,700,WHITE,QString(":/resources/img/white_rook.png"), Scene));
     piecesOnBoardList.append(new pieceOnBoard(0  ,0  ,BLACK,QString(":/resources/img/black_rook.png"), Scene));
     piecesOnBoardList.append(new pieceOnBoard(700,0  ,BLACK,QString(":/resources/img/black_rook.png"), Scene));
-    //bishops
+    // bishops
     piecesOnBoardList.append(new pieceOnBoard(200,700,WHITE,QString(":/resources/img/white_bishop.png"), Scene));
     piecesOnBoardList.append(new pieceOnBoard(500,700,WHITE,QString(":/resources/img/white_bishop.png"), Scene));
     piecesOnBoardList.append(new pieceOnBoard(200,0  ,BLACK,QString(":/resources/img/black_bishop.png"), Scene));
     piecesOnBoardList.append(new pieceOnBoard(500,0  ,BLACK,QString(":/resources/img/black_bishop.png"), Scene));
-    //queens
+    // queens
     piecesOnBoardList.append(new pieceOnBoard(300,700,WHITE,QString(":/resources/img/white_queen.png"), Scene));
     piecesOnBoardList.append(new pieceOnBoard(300,0  ,BLACK,QString(":/resources/img/black_queen.png"), Scene));
-    //kings
+    // kings
     piecesOnBoardList.append(new pieceOnBoard(400,700,WHITE, QString(":/resources/img/white_king.png"), Scene));
     piecesOnBoardList.append(new pieceOnBoard(400,0  ,BLACK,QString(":/resources/img/black_king.png"), Scene));
 }

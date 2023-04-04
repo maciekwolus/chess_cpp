@@ -15,8 +15,7 @@ class pieceOnBoard : public QObject
 public:
     //CONSTRUCTOR
     pieceOnBoard(int x, int y, int c, QString d, QGraphicsScene *s);
-    void updatePieceCoordinates(qreal xCoord,qreal yCoord);
-    QGraphicsPixmapItem* getImage();
+    void movePiecePicture(int x, int y);
 
     //TODO change below to private after the error is handled
     int xCoord, yCoord, color;

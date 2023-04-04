@@ -8,7 +8,7 @@ pieceOnBoard::pieceOnBoard(int x, int y, int c, QString d, QGraphicsScene *s)
     color = c;
 
     // Create QGraphicsPixmapItem for image
-    QGraphicsPixmapItem *image = new QGraphicsPixmapItem(QPixmap(QString(d)));
+    image = new QGraphicsPixmapItem(QPixmap(QString(d)));
 
     // Set flags and position for image
     image->setFlags(QGraphicsItem::ItemIsMovable);
@@ -18,16 +18,16 @@ pieceOnBoard::pieceOnBoard(int x, int y, int c, QString d, QGraphicsScene *s)
     s->addItem(image);
 }
 
-void pieceOnBoard::updatePieceCoordinates(qreal xCoord,qreal yCoord)
+void pieceOnBoard::movePiecePicture(int x, int y)
 {
-    qDebug() << "wchodzi do updatePieceCoordinates";
+    // Set new coordinates
+    //xCoord = x;
+    //yCoord = y;
 
-    image->setPos(xCoord,yCoord); //TU SIE WYWALA
-
-    qDebug() << "konczy updatePieceCoordinates";
-}
-
-QGraphicsPixmapItem* pieceOnBoard::getImage()
-{
-    return image;
+    // Move image to new position
+    if (image != nullptr) {
+        image->setPos(x, y);
+    } else {
+        qDebug() << "Error: image is null";
+    }
 }
