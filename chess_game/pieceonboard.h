@@ -13,8 +13,8 @@ class pieceOnBoard : public QObject
 {
     Q_OBJECT
 public:
-    pieceOnBoard(int x, int y, int c, QString d, QGraphicsScene *s); // constructor
-    void movePiecePicture(int x, int y); // function to move the graphic of piece
+    pieceOnBoard(char x, int y, int c, QString d, QGraphicsScene *s); // constructor
+    void movePiecePicture(char x, int y); // function to move the graphic of piece
 
 private:
     int xCoord, yCoord, color; // obvious variables
