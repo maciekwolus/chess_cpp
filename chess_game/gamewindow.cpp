@@ -4,6 +4,8 @@
 #include <QImage>
 #include <QGraphicsPixmapItem>
 #include <QString>
+#include <QMouseEvent>
+#include <QLabel>
 
 GameWindow::GameWindow(QWidget *parent) :
     QDialog(parent),
@@ -73,7 +75,7 @@ void GameWindow::pieces_setup()
 
 void GameWindow::grabPiece(QMouseEvent *event)
 {
-    //GameWindow::mousePressEvent(event);
+
 }
 
 

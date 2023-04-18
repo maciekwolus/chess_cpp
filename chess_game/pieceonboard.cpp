@@ -2,6 +2,7 @@
 
 pieceOnBoard::pieceOnBoard(char x, int y, int c, QString d, QGraphicsScene *s)
 {
+    color = c; // color set
     // Set member variables (conversion to pixels)
     if (x < 'a' || x > 'h' || y < 1 || y > 8)
     {
@@ -11,8 +12,6 @@ pieceOnBoard::pieceOnBoard(char x, int y, int c, QString d, QGraphicsScene *s)
     xCoord = (static_cast<int>(x) - 97)*100;
     yCoord = (8 - y)*100;
     }
-
-    color = c;
 
     // Create QGraphicsPixmapItem for image
     image = new QGraphicsPixmapItem(QPixmap(QString(d)));
