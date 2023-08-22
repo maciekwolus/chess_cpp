@@ -5,6 +5,7 @@
 #include <QGraphicsScene>
 #include <QString>
 #include <QDebug>
+#include <QMainWindow>
 #include "pieceonboard.h"
 
 namespace Ui {
@@ -27,12 +28,14 @@ public:
 
     void board_setup(); // showing the board
     void pieces_setup(); // showing the pieces at the begining
-    void grabPiece(QMouseEvent *event); // TO DO doing it now. its supposed to move the image of piece
+    bool eventFilter(QObject *obj, QEvent *event) override; // catching all events on board
+    //void grabPiece(QMouseEvent *event); // #TODO doing it now. its supposed to move the image of piece
 
 private:
     Ui::GameWindow *ui; // something smart about frontend idk
     QGraphicsScene *Scene; // scene of board
     QList<pieceOnBoard *>  piecesOnBoardList; // list of pieces (frontend)
+    bool mouse_btn_clicked = false; // ???
 };
 
 #endif // GAMEWINDOW_H

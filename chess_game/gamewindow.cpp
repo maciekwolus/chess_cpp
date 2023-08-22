@@ -1,5 +1,7 @@
 #include "gamewindow.h"
 #include "ui_gamewindow.h"
+
+#include <iostream>
 #include <QPixmap>
 #include <QImage>
 #include <QGraphicsPixmapItem>
@@ -12,10 +14,14 @@ GameWindow::GameWindow(QWidget *parent) :
     ui(new Ui::GameWindow)
 {
     ui->setupUi(this);
+    qApp->installEventFilter(this);
 
     // prepare game setup
     board_setup();
     pieces_setup();
+
+    // debug test
+    qDebug() << "konsola dziala";
 
     // move of first piece
     //piecesOnBoardList.first()->movePiecePicture('c', 4);
@@ -73,9 +79,18 @@ void GameWindow::pieces_setup()
     piecesOnBoardList.append(new pieceOnBoard('e',8,BLACK,QString(":/resources/img/black_king.png"), Scene));
 }
 
-void GameWindow::grabPiece(QMouseEvent *event)
+bool GameWindow::eventFilter(QObject *obj, QEvent *event)
 {
-
+    // #TODO - na razie trzeba zrobić tak, żeby ruszyć obrazek tak jak trzeba
+    if (event->type() == QEvent::MouseButtonPress)
+    {
+        QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
+        if (mouseEvent->button() == Qt::LeftButton)
+        {
+            qDebug() << mouseEvent->pos(); // Print the message on the console
+        }
+    }
+    return QObject::eventFilter(obj, event);
 }
 
 
