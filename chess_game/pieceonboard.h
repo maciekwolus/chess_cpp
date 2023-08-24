@@ -15,6 +15,8 @@ class pieceOnBoard : public QObject
 public:
     pieceOnBoard(char x, int y, int c, QString d, QGraphicsScene *s); // constructor
     void movePiecePicture(char x, int y); // function to move the graphic of piece
+    int giveXCoord(); // return x coordinate
+    int giveYCoord(); // return y coordinate
 
 private:
     int xCoord, yCoord, color; // obvious variables

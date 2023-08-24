@@ -81,15 +81,37 @@ void GameWindow::pieces_setup()
 
 bool GameWindow::eventFilter(QObject *obj, QEvent *event)
 {
-    // #TODO - na razie trzeba zrobić tak, żeby ruszyć obrazek tak jak trzeba
-    if (event->type() == QEvent::MouseButtonPress)
+    if (QString(obj->metaObject()->className()) == "QWidgetWindow") // getting mouse move only from board
     {
-        QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
-        if (mouseEvent->button() == Qt::LeftButton)
+        if (event->type() == QEvent::MouseButtonPress) //mouse button is clicked
         {
-            qDebug() << mouseEvent->pos(); // Print the message on the console
+            QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event); // Cast the event to QMouseEvent
+            mouse_btn_clicked = true;
+            for (const auto& piece : piecesOnBoardList) {
+                if (piece->giveXCoord() == (mouseEvent->pos().x()-100)/100*100 // X position on the screen
+                        && piece->giveYCoord() == (mouseEvent->pos().y()-100)/100*100) // Y position on the screen
+                {
+                    qDebug() << "cos tu jest";
+                    // Do something with the object that matches the criteria
+                }
+            }
+        }
+        else if (event->type() == QEvent::MouseButtonRelease) //mouse button unclicked
+        {
+            QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event); // Cast the event to QMouseEvent
+            mouse_btn_clicked = false;
+        }
+        else if (event->type() == QEvent::MouseMove && mouse_btn_clicked == true) //mouse button moving
+        {
+            //QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
+            //qDebug() << obj->metaObject()->className();
+            //qDebug() << "(x,y): " << mouseEvent->pos();
+            //qDebug() << "x: " << mouseEvent->pos().x(); // Print the message on the console
+            //qDebug() << "y: " << mouseEvent->pos().y();
+
         }
     }
+
     return QObject::eventFilter(obj, event);
 }
 

@@ -28,14 +28,14 @@ public:
 
     void board_setup(); // showing the board
     void pieces_setup(); // showing the pieces at the begining
-    bool eventFilter(QObject *obj, QEvent *event) override; // catching all events on board
+    bool eventFilter(QObject *obj, QEvent *event); // catching all events on board
     //void grabPiece(QMouseEvent *event); // #TODO doing it now. its supposed to move the image of piece
 
 private:
     Ui::GameWindow *ui; // something smart about frontend idk
     QGraphicsScene *Scene; // scene of board
     QList<pieceOnBoard *>  piecesOnBoardList; // list of pieces (frontend)
-    bool mouse_btn_clicked = false; // ???
+    bool mouse_btn_clicked = false; // to know whether the mouse button is clicked or no
 };
 
 #endif // GAMEWINDOW_H
