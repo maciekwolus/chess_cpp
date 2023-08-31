@@ -41,6 +41,19 @@ void pieceOnBoard::movePiecePicture(char x, int y)
     // Move image to new position
     if (image != nullptr) {
         image->setPos(x_int, y_int);
+        // Move piece coordinates
+        xCoord = (static_cast<int>(x) - 97)*100;
+        yCoord = (8 - y)*100;
+    } else {
+        qDebug() << "Error: image is null";
+    }
+}
+
+void pieceOnBoard::piecePictureIsMoving(int x, int y)
+{
+    // Move image to new position
+    if (image != nullptr) {
+        image->setPos(x - 150, y - 150);
     } else {
         qDebug() << "Error: image is null";
     }
@@ -50,7 +63,17 @@ int pieceOnBoard::giveXCoord()
 {
     return xCoord;
 };
+
 int pieceOnBoard::giveYCoord()
 {
     return yCoord;
 };
+
+void pieceOnBoard::deleteImage()
+{
+    if (image)
+    {
+        delete image; // Delete the QGraphicsPixmapItem object
+        image = nullptr; // Set the pointer to nullptr to avoid any potential access after deletion
+    }
+}

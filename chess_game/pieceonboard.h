@@ -15,8 +15,10 @@ class pieceOnBoard : public QObject
 public:
     pieceOnBoard(char x, int y, int c, QString d, QGraphicsScene *s); // constructor
     void movePiecePicture(char x, int y); // function to move the graphic of piece
+    void piecePictureIsMoving(int x, int y); // function to move the graphic of piece while the mouse is moving
     int giveXCoord(); // return x coordinate
     int giveYCoord(); // return y coordinate
+    void deleteImage(); // deleting image
 
 private:
     int xCoord, yCoord, color; // obvious variables

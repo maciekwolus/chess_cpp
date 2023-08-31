@@ -36,6 +36,10 @@ private:
     QGraphicsScene *Scene; // scene of board
     QList<pieceOnBoard *>  piecesOnBoardList; // list of pieces (frontend)
     bool mouse_btn_clicked = false; // to know whether the mouse button is clicked or no
+    char startColumn, endColumn; // columns of the move
+    int startRow, endRow; // row of the move
+    int piecePosition; // position of element in the pieces list
+    bool isOnMove = false; // variable to check if element is moving
 };
 
 #endif // GAMEWINDOW_H
