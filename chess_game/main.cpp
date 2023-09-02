@@ -16,6 +16,8 @@ int main(int argc, char *argv[])
 LIST OF THINGS TO DO (for now)
 - frontend - make deleting objects
 - frontend - make better code, add functions
+- frontend - make buttons work!!
 
 - backend - make move for every piece
+- backend - think if i should delete squre or not
 */

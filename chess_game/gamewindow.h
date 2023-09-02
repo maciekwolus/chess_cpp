@@ -7,16 +7,11 @@
 #include <QDebug>
 #include <QMainWindow>
 #include "pieceonboard.h"
+#include "board.h"
 
 namespace Ui {
 class GameWindow;
 }
-
-enum Color
-{
-    WHITE,
-    BLACK
-};
 
 class GameWindow : public QDialog
 {
@@ -34,6 +29,8 @@ public:
     int getColumnPixel(char column); // gives a spot of column
     int getRowPixel(int row); // gives a spot of column
     int getPieceIndex(QList<pieceOnBoard *>& piecesOnBoardList, int x, int y); // gives piece index
+
+    Board board;
 
 private:
     Ui::GameWindow *ui; // something smart about frontend idk

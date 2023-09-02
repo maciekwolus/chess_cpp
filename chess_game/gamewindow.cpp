@@ -121,7 +121,15 @@ bool GameWindow::eventFilter(QObject *obj, QEvent *event)
 //-------------------------------------------------------------------------------------------------------------------------------
 
                 // Move piece into square
-                piecesOnBoardList.at(piecePosition)->movePiecePicture(endColumn, endRow);
+                if (false == true) //board.isValidMove()
+                {
+                    // trzeba ten poprzedni usunąć
+                    piecesOnBoardList.at(piecePosition)->movePiecePicture(endColumn, endRow);
+                }
+                else
+                {
+                    piecesOnBoardList.at(piecePosition)->movePiecePicture(startColumn, startRow);
+                }
                 isOnMove = false; // piece is not moving
             }
         }

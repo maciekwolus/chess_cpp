@@ -19,17 +19,13 @@ public:
     Board();
     Board(bool Pawns, bool Knights, bool Rooks, bool Bishops, bool Queens, bool Kings);
 
+    bool isOnBoard(const std::pair<int, int> &coords) const;
     bool isValidMove(const std::pair<int, int> &fromCoords, const std::pair<int, int> &toCoords) const; // check if the move is possible
 
     // Destructor
     ~Board();
 
 private:
-    // Members
-    std::map<std::pair<int, int>, std::unique_ptr<Square>> squares;
-    std::vector<std::pair<std::pair<int, int>,std::pair<int, int>>> moves;
-    std::map<size_t, std::unique_ptr<Piece>> capturedPieces;
-
 };
 
 #endif
