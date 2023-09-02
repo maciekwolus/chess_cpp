@@ -19,13 +19,17 @@ public:
     Board();
     Board(bool Pawns, bool Knights, bool Rooks, bool Bishops, bool Queens, bool Kings);
 
-    bool isOnBoard(const std::pair<int, int> &coords) const;
+    Piece* getPiece(const std::pair<int, int> &coords) const; // get piece from given coordinates
+    bool isOnBoard(const std::pair<int, int> &coords) const; // check if move is inside the board
+    bool isOccupied(const std::pair<int, int> &coords) const; // check if smth is on the coordinates
+    bool isOccupiedSameColor(const std::pair<int, int> &fromCoords, const std::pair<int, int> &toCoords) const; // check if place is occupied by the same color
     bool isValidMove(const std::pair<int, int> &fromCoords, const std::pair<int, int> &toCoords) const; // check if the move is possible
 
     // Destructor
-    ~Board();
+    //~Board();
 
 private:
+    std::map<std::pair<int, int>, std::unique_ptr<Square>> squares; // coordinates of single place on board
 };
 
 #endif

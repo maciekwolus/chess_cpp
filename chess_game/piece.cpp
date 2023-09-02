@@ -8,3 +8,8 @@ Piece::Piece(Type t, Color c)
     color = c;
     moves = 0;
 }
+
+Color Piece::getColor() const
+{
+    return color;
+}

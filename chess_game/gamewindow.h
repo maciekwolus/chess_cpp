@@ -29,8 +29,9 @@ public:
     int getColumnPixel(char column); // gives a spot of column
     int getRowPixel(int row); // gives a spot of column
     int getPieceIndex(QList<pieceOnBoard *>& piecesOnBoardList, int x, int y); // gives piece index
+    std::pair<int, int> giveCoordinates(char x, int y);
 
-    Board board;
+    Board board; // connecting frontend to backend
 
 private:
     Ui::GameWindow *ui; // something smart about frontend idk

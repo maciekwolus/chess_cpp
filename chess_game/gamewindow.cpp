@@ -119,9 +119,8 @@ bool GameWindow::eventFilter(QObject *obj, QEvent *event)
                     qDebug() << "size: " << piecesOnBoardList.size()-1;
                 }
 //-------------------------------------------------------------------------------------------------------------------------------
-
                 // Move piece into square
-                if (false == true) //board.isValidMove()
+                if (board.isValidMove(giveCoordinates(startColumn, startRow), giveCoordinates(endColumn, endRow)) == true)
                 {
                     // trzeba ten poprzedni usunąć
                     piecesOnBoardList.at(piecePosition)->movePiecePicture(endColumn, endRow);
@@ -175,6 +174,11 @@ int GameWindow::getPieceIndex(QList<pieceOnBoard *>& piecesOnBoardList, int x, i
         }
     }
     return -1; // Return -1 if no piece was found
+}
+
+std::pair<int, int> GameWindow::giveCoordinates(char x, int y)
+{
+    return std::make_pair(8 - y, x - 97);
 }
 
 GameWindow::~GameWindow()

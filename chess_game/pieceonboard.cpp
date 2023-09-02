@@ -1,4 +1,4 @@
-#include "pieceOnBoard.h"
+#include "pieceonboard.h"
 
 pieceOnBoard::pieceOnBoard(char x, int y, int c, QString d, QGraphicsScene *s)
 {
