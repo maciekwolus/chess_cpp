@@ -107,7 +107,8 @@ bool GameWindow::eventFilter(QObject *obj, QEvent *event)
             if (isOnMove == true)
             {
 //-------------------------------------------------------------------------------------------------------------------------------
-                // TO DO - deleting piece when smth stays on him
+// TO DO - deleting piece when smth stays on him
+// TO DO - naprawić króla który chuj wie co robi ale na pewno się nie rusza
                 // Deleting piece from list
                 for (const auto& piece : piecesOnBoardList) // Looking it there is smth on that place
                 {

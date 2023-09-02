@@ -23,6 +23,8 @@ set(PROJECT_SOURCES
         resource.qrc
         pieceonboard.cpp
         pieceonboard.h
+        piece.cpp
+        piece.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
