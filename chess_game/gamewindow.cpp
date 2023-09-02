@@ -81,28 +81,29 @@ bool GameWindow::eventFilter(QObject *obj, QEvent *event)
     if (QString(obj->metaObject()->className()) == "QWidgetWindow") // getting mouse move only from board
     {
         QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
-        if (event->type() == QEvent::MouseButtonPress) // mouse button is clicked
+
+        // Mouse button CLICK
+        if (event->type() == QEvent::MouseButtonPress)
         {
             mouse_btn_clicked = true; // mouse is clicked
-            startColumn = static_cast<char>((mouseEvent->pos().x()-100)/100 + 97); // get column converted into letter
-            startRow = 8 - (mouseEvent->pos().y()-100)/100; // get row
+            startColumn = getColumnLetter(mouseEvent->pos().x()); // get column converted into letter
+            startRow = getRowNumber(mouseEvent->pos().y()); // get row
 
-            // finding a piece on list
-            for (const auto& piece : piecesOnBoardList) // Looking it there is smth on that place
+            // Get the index of the piece at the specified coordinates
+            piecePosition = getPieceIndex(piecesOnBoardList, getColumnPixel(startColumn), getRowPixel(startRow));
+
+            if (piecePosition != -1)
             {
-                if (piece->giveXCoord() == (mouseEvent->pos().x()-100)/100*100 // X position on the screen
-                        && piece->giveYCoord() == (mouseEvent->pos().y()-100)/100*100) // Y position on the screen
-                {
-                    piecePosition = piecesOnBoardList.indexOf(piece); // get position of the piece on list
-                    isOnMove = true; // make visible that piece is moving
-                }
+                isOnMove = true; // make visible that piece is moving
             }
         }
-        else if (event->type() == QEvent::MouseButtonRelease) //mouse button unclicked
+
+        // Mouse button UNCLICK
+        else if (event->type() == QEvent::MouseButtonRelease)
         {
             mouse_btn_clicked = false; // mouse not clicked anymore
-            endColumn = static_cast<char>((mouseEvent->pos().x()-100)/100 + 97); // get column converted into letter
-            endRow = 8 - (mouseEvent->pos().y()-100)/100; // get row
+            endColumn = getColumnLetter(mouseEvent->pos().x());; // get column converted into letter
+            endRow = getRowNumber(mouseEvent->pos().y()); // get row
 
             if (isOnMove == true)
             {
@@ -110,23 +111,12 @@ bool GameWindow::eventFilter(QObject *obj, QEvent *event)
 // TO DO - deleting piece when smth stays on him
 // TO DO - naprawić króla który chuj wie co robi ale na pewno się nie rusza
                 // Deleting piece from list
-                for (const auto& piece : piecesOnBoardList) // Looking it there is smth on that place
+                pieceToDeletePosition = getPieceIndex(piecesOnBoardList, getColumnPixel(endColumn), getRowPixel(endRow));
+                if (pieceToDeletePosition != -1 && (startColumn != endColumn || startRow != endRow))
                 {
-                    if (piece->giveXCoord() == (mouseEvent->pos().x()-100)/100*100
-                            && piece->giveYCoord() == (mouseEvent->pos().y()-100)/100*100
-                            && (startColumn != endColumn || startRow != endRow) // not the same piece
-                            && piecesOnBoardList.indexOf(piece) != piecesOnBoardList.size()-1) // not the last object in the list (so code is easier) - king so cannot be lost >.<
-                    {
-                        qDebug() << "zbicie gowna";
-                        qDebug() << "index: " << piecesOnBoardList.indexOf(piece);
-                        qDebug() << "size: " << piecesOnBoardList.size()-1;
-
-// KROL SIE ZLE RUSZA!!!!!!!!
-
-                        //piece->deleteImage();
-                        //piecesOnBoardList.removeAt(piecesOnBoardList.indexOf(piece)); //remove from list
-                        //delete piece;
-                    }
+                    qDebug() << "zbicie gowna";
+                    qDebug() << "index: " << pieceToDeletePosition;
+                    qDebug() << "size: " << piecesOnBoardList.size()-1;
                 }
 //-------------------------------------------------------------------------------------------------------------------------------
 
@@ -134,8 +124,9 @@ bool GameWindow::eventFilter(QObject *obj, QEvent *event)
                 piecesOnBoardList.at(piecePosition)->movePiecePicture(endColumn, endRow);
                 isOnMove = false; // piece is not moving
             }
-            //qDebug() << "END: (" << endColumn << ";" << endRow << ")";
         }
+
+        // Mouse button MOVING CLICKED
         else if (event->type() == QEvent::MouseMove && mouse_btn_clicked == true && isOnMove == true) //clicked mouse button moving
         {
             piecesOnBoardList.at(piecePosition)->piecePictureIsMoving(mouseEvent->pos().x(), mouseEvent->pos().y());
@@ -145,6 +136,38 @@ bool GameWindow::eventFilter(QObject *obj, QEvent *event)
     return QObject::eventFilter(obj, event);
 }
 
+char GameWindow::getColumnLetter(int x)
+{
+    return static_cast<char>((x - 100) / 100 + 97);
+}
+
+int GameWindow::getRowNumber(int y)
+{
+    return 8 - (y - 100) / 100;
+}
+
+int GameWindow::getColumnPixel(char column)
+{
+    return (column - 97) * 100;
+}
+
+int GameWindow::getRowPixel(int row)
+{
+    return (8 - row) * 100;
+}
+
+int GameWindow::getPieceIndex(QList<pieceOnBoard *>& piecesOnBoardList, int x, int y)
+{
+    for (int i = 0; i < piecesOnBoardList.size(); ++i)
+    {
+        pieceOnBoard* piece = piecesOnBoardList.at(i);
+        if (piece->giveXCoord() == x && piece->giveYCoord() == y)
+        {
+            return i; // Return the index of the found piece
+        }
+    }
+    return -1; // Return -1 if no piece was found
+}
 
 GameWindow::~GameWindow()
 {

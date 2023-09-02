@@ -13,7 +13,9 @@ class pieceOnBoard : public QObject
 {
     Q_OBJECT
 public:
-    pieceOnBoard(char x, int y, int c, QString d, QGraphicsScene *s); // constructor
+    // construcotr
+    pieceOnBoard(char x, int y, int c, QString d, QGraphicsScene *s);
+
     void movePiecePicture(char x, int y); // function to move the graphic of piece
     void piecePictureIsMoving(int x, int y); // function to move the graphic of piece while the mouse is moving
     int giveXCoord(); // return x coordinate

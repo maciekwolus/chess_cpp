@@ -10,3 +10,12 @@ int main(int argc, char *argv[])
     w.show();
     return a.exec();
 }
+
+
+/*
+LIST OF THINGS TO DO (for now)
+- frontend - make deleting objects
+- frontend - make better code, add functions
+
+- backend - make move for every piece
+*/

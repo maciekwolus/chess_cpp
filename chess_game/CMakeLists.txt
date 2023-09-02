@@ -25,6 +25,22 @@ set(PROJECT_SOURCES
         pieceonboard.h
         piece.cpp
         piece.h
+        square.cpp
+        square.h
+        board.cpp
+        board.h
+        pawn.cpp
+        pawn.h
+        knight.cpp
+        knight.h
+        bishop.cpp
+        bishop.h
+        rook.cpp
+        rook.h
+        queen.cpp
+        queen.h
+        king.cpp
+        king.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
