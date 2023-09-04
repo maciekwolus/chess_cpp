@@ -114,9 +114,9 @@ bool GameWindow::eventFilter(QObject *obj, QEvent *event)
                 pieceToDeletePosition = getPieceIndex(piecesOnBoardList, getColumnPixel(endColumn), getRowPixel(endRow));
                 if (pieceToDeletePosition != -1 && (startColumn != endColumn || startRow != endRow))
                 {
-                    qDebug() << "zbicie gowna";
-                    qDebug() << "index: " << pieceToDeletePosition;
-                    qDebug() << "size: " << piecesOnBoardList.size()-1;
+                    //qDebug() << "zbicie gowna";
+                    //qDebug() << "index: " << pieceToDeletePosition;
+                    //qDebug() << "size: " << piecesOnBoardList.size()-1;
                 }
 //-------------------------------------------------------------------------------------------------------------------------------
                 // Move piece into square

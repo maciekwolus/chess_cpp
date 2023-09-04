@@ -19,6 +19,10 @@ public:
     Board();
     Board(bool Pawns, bool Knights, bool Rooks, bool Bishops, bool Queens, bool Kings);
 
+
+
+
+    // Functions to play
     Piece* getPiece(const std::pair<int, int> &coords) const; // get piece from given coordinates
     bool isOnBoard(const std::pair<int, int> &coords) const; // check if move is inside the board
     bool isOccupied(const std::pair<int, int> &coords) const; // check if smth is on the coordinates
@@ -30,6 +34,17 @@ public:
 
 private:
     std::map<std::pair<int, int>, std::unique_ptr<Square>> squares; // coordinates of single place on board
+    std::unique_ptr<Piece> setPiece(const std::pair<int, int> &coords, std::unique_ptr<Piece> piece); // put a piece on a square, part of preparation which is below
+
+    // Prepare game
+    void prepSquares();
+    void createPawns();
+    void createRooks();
+    void createKnights();
+    void createBishops();
+    void createQueens();
+    void createKings();
+
 };
 
 #endif
