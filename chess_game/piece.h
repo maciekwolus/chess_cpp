@@ -28,9 +28,11 @@ public:
     // Constructor
     Piece(Type, Color);
 
-    Color getColor() const;
+    Color getColor() const; // get color of piece
+    bool getMoved() const; // check if piece has moved
+    void incrementMoves(); // increase number of moves made by a piece
 
-    virtual bool isValidMove(const Board *board, const std::pair<int, int> &fromCoords, const std::pair<int, int> &toCoords) const = 0;
+    virtual bool isValidMove(const Board *board, const std::pair<int, int> &fromCoords, const std::pair<int, int> &toCoords) const = 0; // void to check if piece can move like that
 
     // Destructor
     virtual ~Piece() = default;

@@ -142,13 +142,57 @@ void Board::createKings()
 }
 
 // Returns the piece at a given square
-Piece* Board::getPiece(const std::pair<int, int> &coords) const
+Piece* Board::getPiece(const std::pair<int, int> coords) const
 {
     return squares.find(coords)->second->getPiece();
 }
 
+// Change the coordinates of the piece
+void Board::movePiece(const std::pair<int, int> &fromCoords, const std::pair<int, int> &toCoords)
+{
+// TODO check this
+    // If the piece represents a capture (i.e., destination is occupied), then save captured piece
+    //if (squares[toCoords]->getPiece() != nullptr)
+    //{
+    //    size_t index = moves.size();
+    //    capturedPieces.insert(std::pair<int, std::unique_ptr<Piece>>(index, setPiece(toCoords, nullptr)));
+    //}
+
+    // setPiece inside check if something is already at this loaction. If there is, it puts a null here and return the old coordinates
+    // So it's remove if something is here and do nothing when there's nothing
+    setPiece(toCoords, setPiece(fromCoords, nullptr));
+
+    // Change the value of piece moves (useful for pawn move for example)
+    getPiece(toCoords)->incrementMoves();
+
+// TODO check this - probably list of moves (not neeeded until save or smth)
+    //moves.emplace_back(fromCoords, toCoords);
+}
+
+// Number of board pixels between locations
+int Board::getMoveLength(const std::pair<int, int> fromCoords, const std::pair<int, int> toCoords) const
+{
+    if (isVerticalMove(fromCoords, toCoords))
+    {
+        return abs(toCoords.first - fromCoords.first);
+    }
+    else if (isHorizontalMove(fromCoords, toCoords))
+    {
+        return abs(toCoords.second - fromCoords.second);
+    }
+    else if (isDiagonalMove(fromCoords, toCoords))
+    {
+        return abs(toCoords.first - fromCoords.first); // if it goes one right and one up, let's say it's one and not sqrt from 2
+    }
+    else
+    {
+        // -1 if all false
+        return -1;
+    }
+}
+
 // Checks if a given location is on the board
-bool Board::isOnBoard(const std::pair<int, int> &coords) const
+bool Board::isOnBoard(const std::pair<int, int> coords) const
 {
     if (coords.first < 0 || coords.first > 7)
     {
@@ -165,13 +209,13 @@ bool Board::isOnBoard(const std::pair<int, int> &coords) const
 }
 
 // Checks if a particular square is occupied. Returns true if so, false otherwise.
-bool Board::isOccupied(const std::pair<int, int> &coords) const
+bool Board::isOccupied(const std::pair<int, int> coords) const
 {
     return getPiece(coords) != nullptr;
 }
 
-// Returns true if the destination is occupied by a piece of same color as the origin, false otherwise.
-bool Board::isOccupiedSameColor(const std::pair<int, int> &fromCoords, const std::pair<int, int> &toCoords) const
+// True when there is something in the same color
+bool Board::isOccupiedSameColor(const std::pair<int, int> fromCoords, const std::pair<int, int> toCoords) const
 {
     const Piece *fromPiece = getPiece(fromCoords);
     Color fromColor;
@@ -198,9 +242,187 @@ bool Board::isOccupiedSameColor(const std::pair<int, int> &fromCoords, const std
     return fromColor == toColor;
 }
 
-// Check if move is valid
-bool Board::isValidMove(const std::pair<int, int> &fromCoords, const std::pair<int, int> &toCoords) const
+// True when there is something in a different same color
+bool Board::isOccupiedDifferentColor(const std::pair<int, int> fromCoords, const std::pair<int, int> toCoords) const
 {
+    const Piece *fromPiece = getPiece(fromCoords);
+    Color fromColor;
+    if (fromPiece != nullptr)
+    {
+        fromColor = fromPiece->getColor();
+    }
+    else
+    {
+        return false;
+    }
+
+    const Piece *toPiece = getPiece(toCoords);
+    Color toColor;
+    if (toPiece != nullptr)
+    {
+        toColor = toPiece->getColor();
+    }
+    else
+    {
+        return false;
+    }
+
+    return fromColor != toColor;
+}
+
+// Same column - move is vertical
+bool Board::isVerticalMove(const std::pair<int, int> fromCoords, const std::pair<int, int> toCoords) const
+{
+    return fromCoords.second == toCoords.second;
+}
+
+// Same row - move is horizontal
+bool Board::isHorizontalMove(const std::pair<int, int> fromCoords, const std::pair<int, int> toCoords) const
+{
+    return fromCoords.first == toCoords.first;
+}
+
+// Difference between vertical and horizontal are the same - move is diagonal
+bool Board::isDiagonalMove(const std::pair<int, int> fromCoords, const std::pair<int, int> toCoords) const
+{
+    return abs(toCoords.first - fromCoords.first) == abs(toCoords.second - fromCoords.second);
+}
+
+// Check if white go from bottom to top and black from top to bottom
+bool Board::isForwardMove(const std::pair<int, int> fromCoords, const std::pair<int, int> toCoords, const Piece *piece) const
+{
+    Color pieceColor = piece->getColor();
+    if (pieceColor == BLACK && fromCoords.first < toCoords.first)
+    {
+        return true;
+    }
+    else if (pieceColor == WHITE && fromCoords.first > toCoords.first)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+// Check if there is a piece between the start and end coordinates (except pawn - he is dumb and different)
+bool Board::isPathClear(const std::pair<int, int> fromCoords, const std::pair<int, int> toCoords) const
+{
+    // Start parameters
+    int moveLength = getMoveLength(fromCoords, toCoords);       // Lenght of move
+    bool movingDown = fromCoords.first < toCoords.first; 		// From black side to white side (up to bottom)
+    bool movingRight = fromCoords.second < toCoords.second;		// From left to right
+
+    // Same or 1 - if it's not occupied then definitely true
+    if (moveLength == 0 || moveLength == 1)
+    {
+        return true;
+    }
+
+    // Temp needed to prevent coords change
+    std::pair<int,int> fromTemp = fromCoords;
+    std::pair<int,int> toTemp = toCoords;
+
+    // Check for VERTICAL move - from top to bottom or reverse
+    if (isVerticalMove(fromCoords, toCoords) == true)
+    {
+        // Function is checking for moving down so if it's going up we change it to still check like it was move down (0 is at top and 7 and the bottom so i want it to increase)
+        if (!movingDown)
+        {
+            std::swap(fromTemp, toTemp);
+        }
+
+        for (int i = fromTemp.first + 1; i < toTemp.first; i++)
+        {
+            if (isOccupied(std::make_pair(i, fromTemp.second)))
+            {
+                return false;
+            }
+        }
+
+        // Checked all between - all clear
+        return true;
+    }
+
+    // Check for HORIZONTAL move - from left to right or reverse
+    else if (isHorizontalMove(fromCoords, toCoords) == true)
+    {
+        // Function is checking for moving from left to right so if it's going up we change it to still check like it was like that (0 is at left and 7 and the right so i want it to increase)
+        if (!movingRight)
+        {
+            std::swap(fromTemp, toTemp);
+        }
+
+        for (int i = fromTemp.second + 1; i < toTemp.second; i++)
+        {
+            if (isOccupied(std::make_pair(fromTemp.first, i)))
+            {
+                return false;
+            }
+        }
+
+        // Checked all between - all clear
+        return true;
+    }
+
+    // Check for DIAGONAL move
+    else if (isDiagonalMove(fromCoords, toCoords) == true)
+    {
+        // Not gonna lie - do not really know how it all works in diagonal, but lot of debugging (and a little gpt help) make it work >.<
+        if (movingDown == movingRight)
+        {
+            if (!movingDown && !movingRight)
+            {
+                std::swap(fromTemp, toTemp);
+            }
+
+            int col = fromTemp.second + 1;
+            for (int row = fromTemp.first + 1; row < toTemp.first; row++)
+            {
+                if (isOccupied(std::make_pair(row, col)))
+                {
+                    return false;
+                }
+                col++;
+            }
+
+            // Checked all between - all clear
+            return true;
+
+        }
+        else if (movingDown != movingRight)
+        {
+            if (movingDown && !movingRight)
+            {
+                std::swap(fromTemp, toTemp);
+            }
+
+            int col = fromTemp.second + 1;
+            for (int row = fromTemp.first - 1; row > toTemp.first; row--)
+            {
+                if (isOccupied(std::make_pair(row, col)))
+                {
+                    return false;
+                }
+                col++;
+            }
+
+            // Checked all between - all clear
+            return true;
+        }
+    }
+
+    // Path NOT IN (vertical, horizontal, diagonal) - do not have to change that then as the move is definitely wrong
+    return false;
+}
+
+// Check if move is valid
+bool Board::isValidMove(const std::pair<int, int> &fromCoords, const std::pair<int, int> &toCoords)
+{
+
+// TODO - Check checkmate, check etc
+
     // Check if from and to locations are on the board
     if (!isOnBoard(fromCoords) || !isOnBoard(toCoords))
     {
@@ -211,7 +433,7 @@ bool Board::isValidMove(const std::pair<int, int> &fromCoords, const std::pair<i
      // Check if to location is occupied by piece of same color
     if (isOccupiedSameColor(fromCoords, toCoords))
     {
-        qDebug() << "WARNING - you can't move here because it's occupied";
+        qDebug() << "WARNING - you can't move here because it's occupied (same color piece stays here)";
         return false;
     }
 
@@ -230,5 +452,7 @@ bool Board::isValidMove(const std::pair<int, int> &fromCoords, const std::pair<i
         return false;
     }
 
+    // If you are here then it is ture
+    movePiece(fromCoords, toCoords);
     return true;
 }

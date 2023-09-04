@@ -23,11 +23,23 @@ public:
 
 
     // Functions to play
-    Piece* getPiece(const std::pair<int, int> &coords) const; // get piece from given coordinates
-    bool isOnBoard(const std::pair<int, int> &coords) const; // check if move is inside the board
-    bool isOccupied(const std::pair<int, int> &coords) const; // check if smth is on the coordinates
-    bool isOccupiedSameColor(const std::pair<int, int> &fromCoords, const std::pair<int, int> &toCoords) const; // check if place is occupied by the same color
-    bool isValidMove(const std::pair<int, int> &fromCoords, const std::pair<int, int> &toCoords) const; // check if the move is possible
+    Piece* getPiece(const std::pair<int, int> coords) const; // get piece from given coordinates
+    void movePiece(const std::pair<int, int> &fromCoords, const std::pair<int, int> &toCoords); // change coordinates of the piece
+
+    // Function to make the logic more clear
+    int getMoveLength(const std::pair<int, int> fromCoords, const std::pair<int, int> toCoords) const; // get lenght of move
+    bool isOnBoard(const std::pair<int, int> coords) const; // check if move is inside the board
+    bool isOccupied(const std::pair<int, int> coords) const; // check if smth is on the coordinates
+    bool isOccupiedSameColor(const std::pair<int, int> fromCoords, const std::pair<int, int> toCoords) const; // check if place is occupied by the same color
+    bool isOccupiedDifferentColor(const std::pair<int, int> fromCoords, const std::pair<int, int> toCoords) const; // check if place is occupied by the different color
+    bool isVerticalMove(const std::pair<int, int> fromCoords, const std::pair<int, int> toCoords) const; // check if move is vertical (top to bottom or reverse)
+    bool isHorizontalMove(const std::pair<int, int> fromCoords, const std::pair<int, int> toCoords) const; // check if move is horizontal (left to right or reverse)
+    bool isDiagonalMove(const std::pair<int, int> fromCoords, const std::pair<int, int> toCoords) const; // check if move is diagonal (like bishop)
+    bool isForwardMove(const std::pair<int, int> fromCoords, const std::pair<int, int> toCoords, const Piece* piece) const; // check if pawns (black or white) goes in a good way
+    bool isPathClear(const std::pair<int, int> fromCoords, const std::pair<int, int> toCoords) const; // check if there is a piece between coordinates
+
+    // Function to check if move is good - it's a connector to frontend
+    bool isValidMove(const std::pair<int, int> &fromCoords, const std::pair<int, int> &toCoords); // check if the move is possible
 
     // Destructor
     //~Board();

@@ -4,11 +4,18 @@
 // Constructor
 Bishop::Bishop(Color c) : Piece(BISHOP, c) {}
 
-// Determine if this is a valid move based on the rules of the Bishop.
+// It can goes like from corner to corner idk how to descibe that
 bool Bishop::isValidMove(const Board *board, const std::pair<int, int> &fromCoords, const std::pair<int, int> &toCoords) const
 {
+    if (board->isDiagonalMove(fromCoords, toCoords))
+        {
+            if (board->isPathClear(fromCoords, toCoords))
+            {
+                return true;
+            }
+        }
 
-    // If we've gotten this far, not a valid move
+    // Not a valid if the condition are not made
     return false;
 
 }
