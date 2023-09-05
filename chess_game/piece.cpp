@@ -22,8 +22,20 @@ bool Piece::getMoved() const
     return moves > 0; // true if more than 0
 }
 
+// Gives piece type
+Type Piece::getType() const
+{
+    return type;
+}
+
 // Increases number of moves
 void Piece::incrementMoves()
 {
     moves++;
+}
+
+// Decrement number of moves
+void Piece::decrementMoves()
+{
+    moves--;
 }

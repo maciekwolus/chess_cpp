@@ -141,32 +141,18 @@ void Board::createKings()
     setPiece(std::make_pair(0, 4), std::make_unique<King>(BLACK));
 }
 
+// change letters to number, e.g. a8 to <0,0>
+std::pair<int, int> Board::algebraicToInt(std::string algebraicCoords) const
+{
+    int col = algebraicCoords[0] - 'a'; 			// letter to int
+    int row = 8 - (algebraicCoords[1] - '0');		// ascii letter to int and flip
+    return std::make_pair(row,col);
+}
+
 // Returns the piece at a given square
 Piece* Board::getPiece(const std::pair<int, int> coords) const
 {
     return squares.find(coords)->second->getPiece();
-}
-
-// Change the coordinates of the piece
-void Board::movePiece(const std::pair<int, int> &fromCoords, const std::pair<int, int> &toCoords)
-{
-// TODO check this
-    // If the piece represents a capture (i.e., destination is occupied), then save captured piece
-    //if (squares[toCoords]->getPiece() != nullptr)
-    //{
-    //    size_t index = moves.size();
-    //    capturedPieces.insert(std::pair<int, std::unique_ptr<Piece>>(index, setPiece(toCoords, nullptr)));
-    //}
-
-    // setPiece inside check if something is already at this loaction. If there is, it puts a null here and return the old coordinates
-    // So it's remove if something is here and do nothing when there's nothing
-    setPiece(toCoords, setPiece(fromCoords, nullptr));
-
-    // Change the value of piece moves (useful for pawn move for example)
-    getPiece(toCoords)->incrementMoves();
-
-// TODO check this - probably list of moves (not neeeded until save or smth)
-    //moves.emplace_back(fromCoords, toCoords);
 }
 
 // Number of board pixels between locations
@@ -418,11 +404,8 @@ bool Board::isPathClear(const std::pair<int, int> fromCoords, const std::pair<in
 }
 
 // Check if move is valid
-bool Board::isValidMove(const std::pair<int, int> &fromCoords, const std::pair<int, int> &toCoords)
+bool Board::isValidMove(const std::pair<int, int> &fromCoords, const std::pair<int, int> &toCoords) const
 {
-
-// TODO - Check checkmate, check etc
-
     // Check if from and to locations are on the board
     if (!isOnBoard(fromCoords) || !isOnBoard(toCoords))
     {
@@ -453,6 +436,218 @@ bool Board::isValidMove(const std::pair<int, int> &fromCoords, const std::pair<i
     }
 
     // If you are here then it is ture
-    movePiece(fromCoords, toCoords);
     return true;
+}
+
+// Move piece without any checking (used to move rook in castle for example)
+void Board::forceMovePiece(const std::pair<int, int> fromCoords, const std::pair<int, int> toCoords)
+{
+    setPiece(toCoords, setPiece(fromCoords, nullptr));
+}
+
+// Undo last move
+void Board::revertLastMove()
+{
+    // Get last move from moves vector
+    std::pair<std::pair<int, int>, std::pair<int, int>> lastMove = moves.back();
+
+    // Undo last move
+    forceMovePiece(lastMove.second, lastMove.first);
+
+    // If last move was a capture, then replace captured piece
+    int previousMove = moves.size() - 1;
+    if (capturedPieces.find(previousMove) != capturedPieces.end())
+    {
+        // Move the piece from capturedPieces map to the board
+        setPiece(lastMove.second, std::move(capturedPieces[previousMove]));
+
+        // Erase the entry from capturedPieces map
+        capturedPieces.erase(previousMove);
+    }
+
+    // Remove it from move vector
+    moves.pop_back();
+
+    // Decrement move counter in piece
+    getPiece(lastMove.first)->decrementMoves();
+}
+
+// Gives a color of move
+Color Board::getColor()
+{
+    return colorTurn;
+}
+
+// Move piece - change the coordinates of the piece
+bool Board::movePiece(const std::pair<int, int> &fromCoords, const std::pair<int, int> &toCoords)
+{
+    if (isValidMove(fromCoords, toCoords))
+    {
+        // If the piece represents a capture (i.e., destination is occupied), then save captured piece
+        if (squares[toCoords]->getPiece() != nullptr)
+        {
+            int index = moves.size();
+            capturedPieces.insert(std::pair<int, std::unique_ptr<Piece>>(index, setPiece(toCoords, nullptr)));
+        }
+
+        // setPiece inside check if something is already at this loaction. If there is, it puts a null here and return the old coordinates
+        // So it's remove if something is here and do nothing when there's nothing
+        setPiece(toCoords, setPiece(fromCoords, nullptr));
+
+        // Change the value of piece moves (useful for pawn move for example)
+        getPiece(toCoords)->incrementMoves();
+        moves.emplace_back(fromCoords, toCoords);
+
+        return true;
+    }
+
+    return false;
+}
+
+// Check if the move is castling
+bool Board::castle(const Color toMove, const std::pair<int, int> from, const std::pair<int, int> to)
+{
+    // Get the rook we're going to castle with and intermediate location
+    Piece* rook;
+    std::pair<int,int> intermediateLocation; // position between rook and king
+    std::pair<int,int> rookLocation;
+    if (to == algebraicToInt("g8"))
+    {
+        rookLocation = algebraicToInt("h8");
+        intermediateLocation = algebraicToInt("f8");
+    }
+    else if (to == algebraicToInt("c8"))
+    {
+        rookLocation = algebraicToInt("a8");
+        intermediateLocation = algebraicToInt("d8");
+    }
+    else if (to == algebraicToInt("g1"))
+    {
+        rookLocation = algebraicToInt("h1");
+        intermediateLocation = algebraicToInt("f1");
+    }
+    else if (to == algebraicToInt("c1"))
+    {
+        rookLocation = algebraicToInt("a1");
+        intermediateLocation = algebraicToInt("d1");
+    }
+    else
+    {
+        return false;
+    }
+
+    // Get a pointer to the rook
+    rook = getPiece(rookLocation);
+
+    // Check if there is a clear path between them and that it's a horizontal move
+    if (!isPathClear(from, rookLocation) || !isHorizontalMove(from, to))
+    {
+        return false;
+    }
+
+    // Check if king is not in check
+    if (isInCheck(toMove))
+    {
+        return false;
+    }
+
+    // Check if rook and king haven't moved
+    if (getPiece(from)->getMoved() || rook->getMoved())
+    {
+        return false;
+    }
+
+    // King can not be in check after the move
+    // First step for king
+    if (movePiece(from, intermediateLocation))
+    {
+        // Verify that move doesn't put player in check
+        if (isInCheck(toMove))
+        {
+            // If move puts player in check, revert move, and let player enter different move
+            revertLastMove();
+            return false;
+        }
+
+    }
+    // Second step for king
+    if (movePiece(intermediateLocation, to))
+    {
+        // Verify that move doesn't put player in check
+        if (isInCheck(toMove))
+        {
+            // If move puts player in check, revert last two moves, and let player enter different move
+            revertLastMove();
+            revertLastMove();
+            return false;
+        }
+    }
+
+    // Ling has moved legally. Rook can move
+    forceMovePiece(rookLocation, intermediateLocation);
+
+    return true;
+}
+
+// Check if someone is in check
+bool Board::isInCheck(Color defendingColor) const
+{
+    // Gettin opposite sites
+    Color attackingColor;
+    if (defendingColor == WHITE)
+    {
+        attackingColor = BLACK;
+    }
+    else
+    {
+        attackingColor = WHITE;
+    }
+
+    // Get locations of defending king and attacking pieces
+    std::pair<int, int> kingLocation = getKingLocation(defendingColor);
+    std::vector<std::pair<int, int>> pieceLocations = getPieceLocations(attackingColor);
+
+    for (auto attackingPiece : pieceLocations)
+    {
+        if (isValidMove(attackingPiece, kingLocation))
+        {
+            return true;
+        }
+    }
+
+    // Not chech if u r here
+    return false;
+}
+
+// Gives a king location of a given color
+std::pair<int, int> Board::getKingLocation(Color color) const
+{
+    for (auto const& square : squares) {
+        Piece* piece = square.second->getPiece();
+        if (piece != nullptr && piece->getColor() == color && piece->getType() == KING)
+        {
+            return square.first;
+        }
+    }
+
+    // King is never removed from the board = never execute
+    return std::make_pair(-1,-1);
+}
+
+// Gives all locations of pieces of a given color.
+std::vector<std::pair<int, int>> Board::getPieceLocations(Color color) const
+{
+    std::vector<std::pair<int, int>> pieceLocations;
+    pieceLocations.reserve(squares.size());
+
+    for (auto const& square : squares)
+    {
+        Piece* piece = square.second->getPiece();
+        if (piece != nullptr && piece->getColor() == color)
+        {
+            pieceLocations.push_back(square.first);
+        }
+    }
+
+    return pieceLocations;
 }

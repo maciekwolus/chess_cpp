@@ -28,8 +28,9 @@ public:
     int getRowNumber(int y); // gives a number of a row
     int getColumnPixel(char column); // gives a spot of column
     int getRowPixel(int row); // gives a spot of column
-    int getPieceIndex(QList<pieceOnBoard *>& piecesOnBoardList, int x, int y); // gives piece index
-    std::pair<int, int> giveCoordinates(char x, int y);
+    int getPieceIndex(QList<pieceOnBoard *> piecesOnBoardList, int x, int y); // gives piece index
+    std::pair<int, int> giveCoordinates(char x, int y); // give coordinates as a pair
+    void castleFrontent(QList<pieceOnBoard *> piecesOnBoardList, std::pair<int, int> startCoordinates, std::pair<int, int> endCoordinates); // make castle at the frontend
 
     Board board; // connecting frontend to backend
 
