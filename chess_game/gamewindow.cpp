@@ -107,27 +107,27 @@ bool GameWindow::eventFilter(QObject *obj, QEvent *event)
 
             if (isOnMove == true)
             {
-//-------------------------------------------------------------------------------------------------------------------------------
-// TO DO - deleting piece when smth stays on him
-// TO DO - naprawić króla który chuj wie co robi ale na pewno się nie rusza
-                // Deleting piece from list
                 pieceToDeletePosition = getPieceIndex(piecesOnBoardList, getColumnPixel(endColumn), getRowPixel(endRow));
+
+                pieceOnBoard *pieceToMove = piecesOnBoardList[piecePosition]; // pointer to a piece to move
+                pieceOnBoard *pieceToDelete; // pointer to a piece to delete (no value now as it might be empty)
+
                 if (pieceToDeletePosition != -1 && (startColumn != endColumn || startRow != endRow))
                 {
-                    //qDebug() << "zbicie gowna";
-                    //qDebug() << "index: " << pieceToDeletePosition;
-                    //qDebug() << "size: " << piecesOnBoardList.size()-1;
+                    pieceToDelete = piecesOnBoardList[pieceToDeletePosition]; // Not empty so there is a value
+                    pieceToDelete->deleteImage(); // Delete image of piece
+                    delete pieceToDelete; // Delete the object
+                    piecesOnBoardList.erase(piecesOnBoardList.begin() + pieceToDeletePosition); // Remove it from the list
+
                 }
-//-------------------------------------------------------------------------------------------------------------------------------
-                // Move piece into square
+                // Move piece into square when it's valid and move back when it's not
                 if (board.isValidMove(giveCoordinates(startColumn, startRow), giveCoordinates(endColumn, endRow)) == true)
                 {
-                    // trzeba ten poprzedni usunąć
-                    piecesOnBoardList.at(piecePosition)->movePiecePicture(endColumn, endRow);
+                    pieceToMove->movePiecePicture(endColumn, endRow);
                 }
                 else
                 {
-                    piecesOnBoardList.at(piecePosition)->movePiecePicture(startColumn, startRow);
+                    pieceToMove->movePiecePicture(startColumn, startRow);
                 }
                 isOnMove = false; // piece is not moving
             }
