@@ -19,12 +19,24 @@ GameWindow::GameWindow(QWidget *parent) :
     // prepare game setup
     board_setup();
     pieces_setup();
-
-    // debug test
-    //qDebug() << "konsola dziala";
-
 }
 
+// BUTTONS FUNCIOTNS
+// Button to exit the game (before making sure button)
+void GameWindow::on_pushButton_exit_clicked()
+{
+    qDebug() << "u r exitin game";
+}
+
+// Button to restart the game (before making sure button)
+void GameWindow::on_pushButton_restart_clicked()
+{
+    qDebug() << "u r restarting game";
+}
+
+
+// PREPARE GAME FUNCTIONS
+// Prepare board
 void GameWindow::board_setup()
 {
     // SHOW THE BOARD
@@ -33,6 +45,7 @@ void GameWindow::board_setup()
     ui->graphicsView->setScene(Scene);
 }
 
+// Prepare picutres of pieces on board (frontend)
 void GameWindow::pieces_setup()
 {
     // CREATING LIST OF PIECES PICTURES
@@ -76,6 +89,8 @@ void GameWindow::pieces_setup()
     piecesOnBoardList.append(new pieceOnBoard('e',8,BLACK,QString(":/resources/img/black_king.png"), Scene));
 }
 
+// WORKING GAME FUNCTIONS
+// Event filter to catch what mouse do on screen
 bool GameWindow::eventFilter(QObject *obj, QEvent *event)
 {
     if (QString(obj->metaObject()->className()) == "QWidgetWindow") // getting mouse move only from board
@@ -104,42 +119,60 @@ bool GameWindow::eventFilter(QObject *obj, QEvent *event)
             mouse_btn_clicked = false; // mouse not clicked anymore
             endColumn = getColumnLetter(mouseEvent->pos().x());; // get column converted into letter
             endRow = getRowNumber(mouseEvent->pos().y()); // get row
-            qDebug() << "endColumn" << endColumn;
-            qDebug() << "endRow" << endRow;
+
             if (isOnMove == true)
             {
-                pieceToDeletePosition = getPieceIndex(piecesOnBoardList, getColumnPixel(endColumn), getRowPixel(endRow));
+                pieceToDeletePosition = getPieceIndex(piecesOnBoardList, getColumnPixel(endColumn), getRowPixel(endRow)); //index of piece to delete when captured
 
                 pieceOnBoard *pieceToMove = piecesOnBoardList[piecePosition]; // pointer to a piece to move
                 pieceOnBoard *pieceToDelete; // pointer to a piece to delete (no value now as it might be empty)
 
+                // Coordinates to give to backend
+                std::pair<int, int> startCoordinates = giveCoordinates(startColumn, startRow);
+                std::pair<int, int> endCoordinates = giveCoordinates(endColumn, endRow);
 
-
-                // Move piece into square when it's valid and move back when it's not
-                if (board.castle(board.getColor(), giveCoordinates(startColumn, startRow), giveCoordinates(endColumn, endRow)) == true)
+                //Check if piece has good color
+                if (board.checkPieceColor(startCoordinates))
                 {
-                    pieceToMove->movePiecePicture(endColumn, endRow);
-                    castleFrontent(piecesOnBoardList, giveCoordinates(startColumn, startRow), giveCoordinates(endColumn, endRow));
-                }
-                else if (board.movePiece(giveCoordinates(startColumn, startRow), giveCoordinates(endColumn, endRow)) == true)
-                {
-                    pieceToMove->movePiecePicture(endColumn, endRow);
-
-// TODO Add function for below
-                    // delete piece when it's captured
-                    if (pieceToDeletePosition != -1 && (startColumn != endColumn || startRow != endRow))
+                    // Move piece into square when it's valid and move back when it's not
+                    if (board.castle(board.getColor(), startCoordinates, endCoordinates))
                     {
-                        pieceToDelete = piecesOnBoardList[pieceToDeletePosition]; // Not empty so there is a value
-                        pieceToDelete->deleteImage(); // Delete image of piece
-                        delete pieceToDelete; // Delete the object
-                        piecesOnBoardList.erase(piecesOnBoardList.begin() + pieceToDeletePosition); // Remove it from the list
+                        pieceToMove->movePiecePicture(endColumn, endRow);
+                        board.switchColor(); // switching color which will move next
+                        castleFrontent(piecesOnBoardList, startCoordinates, endCoordinates);
+                    }
+                    else if (board.movePiece(startCoordinates, endCoordinates))
+                    {
+                        pieceToMove->movePiecePicture(endColumn, endRow);
+                        board.switchColor(); // switching color which will move next
+
+                        // delete piece when it's captured
+                        if (pieceToDeletePosition != -1 && (startColumn != endColumn || startRow != endRow))
+                        {
+                            pieceToDelete = piecesOnBoardList[pieceToDeletePosition]; // Not empty so there is a value
+                            pieceToDelete->deleteImage(); // Delete image of piece
+                            delete pieceToDelete; // Delete the object
+                            piecesOnBoardList.erase(piecesOnBoardList.begin() + pieceToDeletePosition); // Remove it from the list
+                        }
+                    }
+                    // no valid move
+                    else
+                    {
+                        pieceToMove->movePiecePicture(startColumn, startRow);
                     }
                 }
+                // Color is wrong
                 else
                 {
                     pieceToMove->movePiecePicture(startColumn, startRow);
                 }
                 isOnMove = false; // piece is not moving
+            }
+// TODO Add game ending
+            // Game ending
+            if (board.endGame(board.getColor()))
+            {
+                qDebug() << "koniec gry";
             }
         }
 
@@ -153,26 +186,31 @@ bool GameWindow::eventFilter(QObject *obj, QEvent *event)
     return QObject::eventFilter(obj, event);
 }
 
+// Return letter after giving an int (e.g.. when 0 then a)
 char GameWindow::getColumnLetter(int x)
 {
     return static_cast<char>((x - 100) / 100 + 'a');
 }
 
+// Return the given row number of board
 int GameWindow::getRowNumber(int y)
 {
     return 8 - (y - 100) / 100;
 }
 
+// Return column number of that small square on board
 int GameWindow::getColumnPixel(char column)
 {
     return (column - 'a') * 100;
 }
 
+// Return row number of that small square on board
 int GameWindow::getRowPixel(int row)
 {
     return (8 - row) * 100;
 }
 
+// Return image piece index from list
 int GameWindow::getPieceIndex(QList<pieceOnBoard *> piecesOnBoardList, int x, int y)
 {
     for (int i = 0; i < piecesOnBoardList.size(); ++i)
@@ -186,6 +224,7 @@ int GameWindow::getPieceIndex(QList<pieceOnBoard *> piecesOnBoardList, int x, in
     return -1; // Return -1 if no piece was found
 }
 
+// Convert int coordinates into a pair to give it into backend
 std::pair<int, int> GameWindow::giveCoordinates(char x, int y)
 {
     return std::make_pair(8 - y, x - 97);
@@ -220,6 +259,7 @@ void GameWindow::castleFrontent(QList<pieceOnBoard *> piecesOnBoardList, std::pa
     }
 }
 
+// Destructor
 GameWindow::~GameWindow()
 {
     delete ui;

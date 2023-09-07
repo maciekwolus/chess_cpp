@@ -149,6 +149,20 @@ std::pair<int, int> Board::algebraicToInt(std::string algebraicCoords) const
     return std::make_pair(row,col);
 }
 
+// Switch color turn
+void Board::switchColor()
+{
+    if (colorTurn == WHITE)
+    {
+        colorTurn = BLACK;
+    }
+    else
+    {
+        colorTurn = WHITE;
+    }
+
+}
+
 // Returns the piece at a given square
 Piece* Board::getPiece(const std::pair<int, int> coords) const
 {
@@ -409,14 +423,14 @@ bool Board::isValidMove(const std::pair<int, int> &fromCoords, const std::pair<i
     // Check if from and to locations are on the board
     if (!isOnBoard(fromCoords) || !isOnBoard(toCoords))
     {
-        qDebug() << "WARNING - you can't move out of board";
+        // qDebug() << "WARNING - you can't move out of board";
         return false;
     }
 
      // Check if to location is occupied by piece of same color
     if (isOccupiedSameColor(fromCoords, toCoords))
     {
-        qDebug() << "WARNING - you can't move here because it's occupied (same color piece stays here)";
+        // qDebug() << "WARNING - you can't move here because it's occupied (same color piece stays here)";
         return false;
     }
 
@@ -424,14 +438,14 @@ bool Board::isValidMove(const std::pair<int, int> &fromCoords, const std::pair<i
     const Piece *piece = getPiece(fromCoords);
     if (piece == nullptr)
     {
-        qDebug() << "WARNING - no piece here";
+        // qDebug() << "WARNING - no piece here";
         return false;
     }
 
     // Check if this is a valid move for this piece
     if (!piece->isValidMove(this, fromCoords, toCoords))
     {
-        qDebug() << "WARNING - not a valid move";
+        // qDebug() << "WARNING - not a valid move";
         return false;
     }
 
@@ -470,6 +484,25 @@ void Board::revertLastMove()
 
     // Decrement move counter in piece
     getPiece(lastMove.first)->decrementMoves();
+}
+
+// Check if piece color is same as turn color
+bool Board::checkPieceColor(const std::pair<int, int> fromCoords) const
+{
+    // iterate through all squares with pointers to pieces
+    for (auto const& square : squares)
+    {
+        Piece* piece = square.second->getPiece();
+
+        // if piece on given coordinates has same color, then true
+        if (square.first == fromCoords && piece->getColor() == colorTurn)
+        {
+            return true;
+        }
+    }
+
+    // if no piece on that coordinates with matching color then false
+    return false;
 }
 
 // Gives a color of move
@@ -650,4 +683,116 @@ std::vector<std::pair<int, int>> Board::getPieceLocations(Color color) const
     }
 
     return pieceLocations;
+}
+
+// Returns Location of all pieces in vector
+std::vector<std::pair<int, int>> Board::getLocations() const
+{
+    std::vector<std::pair<int, int>> pieceLocations;
+    pieceLocations.reserve(squares.size());
+
+    for (auto const& square : squares)
+    {
+        pieceLocations.push_back(square.first);
+    }
+
+    return pieceLocations;
+}
+
+// Check if checkmate - in check and has no moves
+bool Board::isInCheckMate(Color defendingColor)
+{
+    if (isInCheck(defendingColor))
+    {
+        std::vector<std::pair<int, int>> pieceLocations = getPieceLocations(defendingColor);
+        std::vector<std::pair<int, int>> locations = getLocations();
+
+        for (auto const &pieceLocation : pieceLocations)
+        {
+            for (auto const &location : locations)
+            {
+                // try to move piece
+                if (movePiece(pieceLocation, location))
+                {
+                    // if player is no in check, then he has moves - undo move and return false
+                    if (!isInCheck(defendingColor))
+                    {
+                        revertLastMove();
+                        return false; // not in check
+                    }
+
+                    // revert the last move if the player was still in check and continue looping (or end game)
+                    revertLastMove();
+                }
+            }
+        }
+    }
+    else
+    {
+        return false;
+    }
+
+    // return true when checkmate
+    return true;
+}
+
+// Check if stalemate - NOT in check and has no moves
+bool Board::isInStalemate(Color defendingColor)
+{
+    if (isInCheck(defendingColor))
+    {
+        return false;
+    }
+    else
+    {
+        std::vector<std::pair<int, int>> pieceLocations = getPieceLocations(defendingColor);
+        std::vector<std::pair<int, int>> locations = getLocations();
+
+        for (auto const &pieceLocation : pieceLocations)
+        {
+            for (auto const &location : locations)
+            {
+                // try to move piece
+                if (movePiece(pieceLocation, location))
+                {
+                    // if player is no in check, then he has moves - undo move and return false
+                    if (!isInCheck(defendingColor))
+                    {
+                        revertLastMove();
+                        return false; // not in stalemate
+                    }
+
+                    // revert the last move if the player was still in check and continue looping (or end game)
+                    revertLastMove();
+                }
+            }
+        }
+    }
+
+    // return true when checkmate stalemate
+    return true;
+}
+
+// Ends game when it checkmate or stealmate
+bool Board::endGame(Color toMove)
+{
+    Color defendingColor = WHITE;
+    if (toMove == WHITE)
+    {
+        defendingColor = BLACK;
+    }
+
+    if (isInCheckMate(defendingColor))
+    {
+        qDebug() << "GAME IS ENDED! " << toMove << " color has won!";
+        return true;
+    }
+
+    if (isInStalemate(defendingColor))
+    {
+        qDebug() << "GAME IS ENDED! It is a DRAW!";
+        return true;
+    }
+
+    return false;
 }

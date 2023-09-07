@@ -19,6 +19,7 @@ public:
 
     // Making code shorter
     std::pair<int, int> algebraicToInt(std::string algebraicCoords) const; // change letters to number, e.g. a8 to <0,0>
+    void switchColor();
 
     // Function to make the logic more clear
     Piece* getPiece(const std::pair<int, int> coords) const; // get piece from given coordinates
@@ -35,18 +36,24 @@ public:
     bool isValidMove(const std::pair<int, int> &fromCoords, const std::pair<int, int> &toCoords) const; // check if the move is possible
     void forceMovePiece(const std::pair<int, int> fromCoords, const std::pair<int, int> toCoords); // move piece without any checking (used to move rook in castle for example)
     void revertLastMove(); // undo last move (used to check if there is a check >.<)
+    bool checkPieceColor(const std::pair<int, int> fromCoords) const; // check if piece has the same color as given
+
 
     // Function to check if move is good - it's a connector to frontend
     Color getColor();
     bool movePiece(const std::pair<int, int> &fromCoords, const std::pair<int, int> &toCoords); // change coordinates of the piece
     bool castle(Color toMove, std::pair<int, int> from, std::pair<int, int> to);
+    bool endGame(Color toMove); // ends game when it checkmate or stealmate
 
     // Locations - might be useful for check, checkmate
     std::vector<std::pair<int,int>> getPieceLocations(Color color) const;
     std::pair<int,int> getKingLocation(Color color) const;
+    std::vector<std::pair<int,int>> getLocations() const; // returns location of all pieces in vector
 
     // End game
-    bool isInCheck(Color defendingColor) const;
+    bool isInCheck(Color defendingColor) const; // check if check
+    bool isInCheckMate(Color defendingColor); // check if checkmate
+    bool isInStalemate(Color defendingColor); // check if stalemate
 
     // Destructor
     //~Board();

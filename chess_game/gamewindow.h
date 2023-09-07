@@ -34,6 +34,11 @@ public:
 
     Board board; // connecting frontend to backend
 
+private slots:
+    void on_pushButton_exit_clicked(); // button to exit the game (before confirmatrion)
+
+    void on_pushButton_restart_clicked();
+
 private:
     Ui::GameWindow *ui; // something smart about frontend idk
     QGraphicsScene *Scene; // scene of board
