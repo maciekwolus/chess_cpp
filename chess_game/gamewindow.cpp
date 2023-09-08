@@ -25,13 +25,17 @@ GameWindow::GameWindow(QWidget *parent) :
 // Button to exit the game (before making sure button)
 void GameWindow::on_pushButton_exit_clicked()
 {
-    qDebug() << "u r exitin game";
+    hide();
+    confirmation_window = new ConfirmationWindow(this, EXIT_GAME);
+    confirmation_window->show();
 }
 
 // Button to restart the game (before making sure button)
 void GameWindow::on_pushButton_restart_clicked()
 {
-    qDebug() << "u r restarting game";
+    hide();
+    confirmation_window = new ConfirmationWindow(this, RESTART_GAME);
+    confirmation_window->show();
 }
 
 
@@ -168,12 +172,8 @@ bool GameWindow::eventFilter(QObject *obj, QEvent *event)
                 }
                 isOnMove = false; // piece is not moving
             }
-// TODO Add game ending
             // Game ending
-            if (board.endGame(board.getColor()))
-            {
-                qDebug() << "koniec gry";
-            }
+            endGame();
         }
 
         // Mouse button MOVING CLICKED
@@ -256,6 +256,32 @@ void GameWindow::castleFrontent(QList<pieceOnBoard *> piecesOnBoardList, std::pa
     {
         pieceOnBoard *rookToMove = piecesOnBoardList[getPieceIndex(piecesOnBoardList, getColumnPixel('a'), getRowPixel(8))];
         rookToMove->movePiecePicture('d', 8);
+    }
+}
+
+// Function to end game
+void GameWindow::endGame()
+{
+    if (board.endGame(board.getColor()))
+    {
+        hide();
+        if (board.isInCheckMate(board.getColor()))
+        {
+            if (board.getColor() == WHITE)
+            {
+                confirmation_window = new ConfirmationWindow(this, BLACK_WON);
+            }
+            else if (board.getColor() == BLACK)
+            {
+                confirmation_window = new ConfirmationWindow(this, WHITE_WON);
+            }
+        }
+
+        if (board.isInStalemate(board.getColor()))
+        {
+            confirmation_window = new ConfirmationWindow(this, STALEMATE);
+        }
+        confirmation_window->show();
     }
 }
 

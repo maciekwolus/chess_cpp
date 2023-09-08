@@ -8,6 +8,7 @@
 #include <QMainWindow>
 #include "pieceonboard.h"
 #include "board.h"
+#include "confirmationwindow.h"
 
 namespace Ui {
 class GameWindow;
@@ -31,16 +32,18 @@ public:
     int getPieceIndex(QList<pieceOnBoard *> piecesOnBoardList, int x, int y); // gives piece index
     std::pair<int, int> giveCoordinates(char x, int y); // give coordinates as a pair
     void castleFrontent(QList<pieceOnBoard *> piecesOnBoardList, std::pair<int, int> startCoordinates, std::pair<int, int> endCoordinates); // make castle at the frontend
+    void endGame(); // function to ned game
 
     Board board; // connecting frontend to backend
 
 private slots:
     void on_pushButton_exit_clicked(); // button to exit the game (before confirmatrion)
-
-    void on_pushButton_restart_clicked();
+    void on_pushButton_restart_clicked(); // button to restart the game (before confirmatrion)
 
 private:
     Ui::GameWindow *ui; // something smart about frontend idk
+    ConfirmationWindow *confirmation_window; // pointer to a confirmation window (this with yes and no)
+
     QGraphicsScene *Scene; // scene of board
     QList<pieceOnBoard *>  piecesOnBoardList; // list of pieces (frontend)
     bool mouse_btn_clicked = false; // to know whether the mouse button is clicked or no

@@ -776,21 +776,16 @@ bool Board::isInStalemate(Color defendingColor)
 // Ends game when it checkmate or stealmate
 bool Board::endGame(Color toMove)
 {
-    Color defendingColor = WHITE;
-    if (toMove == WHITE)
-    {
-        defendingColor = BLACK;
-    }
-
+    Color defendingColor = toMove;
     if (isInCheckMate(defendingColor))
     {
-        qDebug() << "GAME IS ENDED! " << toMove << " color has won!";
+        // qDebug() << "GAME IS ENDED! " << toMove << " color has won!";
         return true;
     }
 
     if (isInStalemate(defendingColor))
     {
-        qDebug() << "GAME IS ENDED! It is a DRAW!";
+        // qDebug() << "GAME IS ENDED! It is a DRAW!";
         return true;
     }
 

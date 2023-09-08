@@ -20,6 +20,9 @@ set(PROJECT_SOURCES
         gamewindow.cpp
         gamewindow.h
         gamewindow.ui
+        confirmationwindow.h
+        confirmationwindow.cpp
+        confirmationwindow.ui
         resource.qrc
         pieceonboard.cpp
         pieceonboard.h
