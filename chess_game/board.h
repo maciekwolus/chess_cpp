@@ -38,6 +38,9 @@ public:
     void revertLastMove(); // undo last move (used to check if there is a check >.<)
     bool checkPieceColor(const std::pair<int, int> fromCoords) const; // check if piece has the same color as given
 
+    // Function to save moves
+    std::string getCurrentTimestamp(); // take timestamp to create and save to file
+    void saveMoves(); // saves moves which was made
 
     // Function to check if move is good - it's a connector to frontend
     Color getColor();

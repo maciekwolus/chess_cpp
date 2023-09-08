@@ -264,6 +264,10 @@ void GameWindow::endGame()
 {
     if (board.endGame(board.getColor()))
     {
+        // Save moves
+        board.saveMoves();
+
+        // Ask if player still want to play
         hide();
         if (board.isInCheckMate(board.getColor()))
         {

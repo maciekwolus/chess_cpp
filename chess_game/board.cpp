@@ -11,6 +11,10 @@
 #include "king.h"
 #include "queen.h"
 #include <QDebug>
+#include <fstream>
+#include <stdexcept>
+#include <ctime>
+#include <sstream>
 
 Board::Board()
 {
@@ -790,4 +794,45 @@ bool Board::endGame(Color toMove)
     }
 
     return false;
+}
+
+// Get a timestamp to a filename
+std::string Board::getCurrentTimestamp()
+{
+    std::time_t now = std::time(nullptr);
+    char buffer[80];
+    std::strftime(buffer, sizeof(buffer), "%Y%m%d%H%M%S", std::localtime(&now));
+    return buffer;
+}
+
+// Saving moves to csv files
+void Board::saveMoves()
+{
+    std::string directory = "C:/Users/User/Desktop/priv/magazynierka/1P - C++ (projekt to do)/PROJECT_REPO/chess_cpp/games/"; // name of directory
+    std::string filename = directory + "ChessGame_" + getCurrentTimestamp() + ".csv"; // name of file which includes timestamp
+    std::ofstream outputFile(filename); // file with that name
+
+    // showing moves
+    /*for (const auto& move : moves)
+    {
+        qDebug() << "Move from (" << move.first.first << ", " << move.first.second
+                     << ") to (" << move.second.first << ", " << move.second.second << ")";
+    }*/
+
+    // check if file open
+    if (!outputFile.is_open())
+    {
+        throw std::runtime_error("Error opening file: " + filename);
+    }
+
+    // add moves to file
+    for (const auto& move : moves)
+    {
+        outputFile << move.first.first << "," << move.first.second << ","
+                   << move.second.first << "," << move.second.second << "\n";
+    }
+
+    // close file
+    outputFile.close();
+    qDebug() << "Moves saved to " << filename;
 }
