@@ -27,24 +27,6 @@ Board::Board()
     createKings();
 }
 
-// This creates a board with the pieces specified by argument parameters
-Board::Board(bool Pawns, bool Knights, bool Rooks, bool Bishops, bool Queens, bool Kings)
-{
-    prepSquares();
-    if (Pawns)
-        { createPawns(); }
-    if (Rooks)
-        { createRooks(); }
-    if (Knights)
-        { createKnights(); }
-    if (Bishops)
-        { createBishops(); }
-    if (Queens)
-        { createQueens(); }
-    if (Kings)
-        { createKings(); }
-}
-
 // Squares - stored in a map - pair to unique_ptr to Square object
 // e.g. a8 is a std::pair<0,0>
 void Board::prepSquares()
@@ -836,3 +818,5 @@ void Board::saveMoves()
     outputFile.close();
     qDebug() << "Moves saved to " << filename;
 }
+
+

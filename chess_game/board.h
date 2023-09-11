@@ -15,7 +15,6 @@ class Board {
 public:
     // Constructors
     Board();
-    Board(bool Pawns, bool Knights, bool Rooks, bool Bishops, bool Queens, bool Kings);
 
     // Making code shorter
     std::pair<int, int> algebraicToInt(std::string algebraicCoords) const; // change letters to number, e.g. a8 to <0,0>
@@ -57,9 +56,6 @@ public:
     bool isInCheck(Color defendingColor) const; // check if check
     bool isInCheckMate(Color defendingColor); // check if checkmate
     bool isInStalemate(Color defendingColor); // check if stalemate
-
-    // Destructor
-    //~Board();
 
 private:
     std::map<std::pair<int, int>, std::unique_ptr<Square>> squares; // coordinates of single place on board

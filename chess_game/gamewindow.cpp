@@ -268,8 +268,8 @@ void GameWindow::endGame()
         board.saveMoves();
 
         // Ask if player still want to play
-        hide();
-        if (board.isInCheckMate(board.getColor()))
+        hide(); // hide board
+        if (board.isInCheckMate(board.getColor())) // comunicates to set the massege on the next window
         {
             if (board.getColor() == WHITE)
             {
@@ -285,8 +285,15 @@ void GameWindow::endGame()
         {
             confirmation_window = new ConfirmationWindow(this, STALEMATE);
         }
-        confirmation_window->show();
+        boardRestart(); // reset board in case of next game
+        confirmation_window->show(); // show the next window
     }
+}
+
+// Function to restart board settings
+void GameWindow::boardRestart()
+{
+    board = Board();
 }
 
 // Destructor
