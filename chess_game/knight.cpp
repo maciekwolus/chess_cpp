@@ -1,23 +1,35 @@
 #include <iostream>
 #include "knight.h"
 
-// Constructor
+/**
+ * @brief Constructor for Knight class.
+ *
+ * @param c The color of the Knight (WHITE or BLACK).
+ */
 Knight::Knight(Color c) : Piece(KNIGHT, c) {}
 
-// It can move like an 'L' - 2 up/down and 1 left/right or 2 left/right and 1 up/down
+/**
+ * @brief Check if the Knight can make a valid move.
+ *
+ * @param board The chessboard on which the move is being checked.
+ * @param fromCoords The coordinates of the current position of the Knight.
+ * @param toCoords The coordinates of the destination position.
+ * @return true if the move is valid for a Knight, false otherwise.
+ */
 bool Knight::isValidMove(const Board *board, const std::pair<int, int> &fromCoords, const std::pair<int, int> &toCoords) const
 {
-    // Those two variables make the code cleaner - looks good with that ngl
+    // Calculate vertical and horizontal differences
     int verticalDifference = abs(toCoords.first - fromCoords.first);
     int horizontalDifference = abs(toCoords.second - fromCoords.second);
 
+    // Check if it's a valid Knight move (L-shape)
     if ((verticalDifference == 2 && horizontalDifference == 1) || (verticalDifference == 1 && horizontalDifference == 2))
     {
         return true;
     }
     else
     {
-        // Not a valid if the condition are not made
+        // Not valid if the conditions are not met
         return false;
     }
 }

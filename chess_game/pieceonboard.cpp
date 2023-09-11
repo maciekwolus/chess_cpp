@@ -1,5 +1,14 @@
 #include "pieceonboard.h"
 
+/**
+ * @brief Constructor for pieceOnBoard class.
+ *
+ * @param x The character representing the column (a-h) where the piece is located.
+ * @param y The integer representing the row (1-8) where the piece is located.
+ * @param c The color of the piece.
+ * @param d The filename of the image representing the piece.
+ * @param s The QGraphicsScene where the piece will be displayed.
+ */
 pieceOnBoard::pieceOnBoard(char x, int y, int c, QString d, QGraphicsScene *s)
 {
     color = c; // color set
@@ -24,6 +33,12 @@ pieceOnBoard::pieceOnBoard(char x, int y, int c, QString d, QGraphicsScene *s)
     s->addItem(image);
 }
 
+/**
+ * @brief Move the graphical representation of the piece to a new position on the chessboard.
+ *
+ * @param x The character representing the column (a-h) where the piece should be moved.
+ * @param y The integer representing the row (1-8) where the piece should be moved.
+ */
 void pieceOnBoard::movePiecePicture(char x, int y)
 {
     // Error while not on board
@@ -49,6 +64,12 @@ void pieceOnBoard::movePiecePicture(char x, int y)
     }
 }
 
+/**
+ * @brief Move the graphical representation of the piece while the mouse is moving.
+ *
+ * @param x The x-coordinate of the new position.
+ * @param y The y-coordinate of the new position.
+ */
 void pieceOnBoard::piecePictureIsMoving(int x, int y)
 {
     // Move image to new position
@@ -59,16 +80,29 @@ void pieceOnBoard::piecePictureIsMoving(int x, int y)
     }
 }
 
+/**
+ * @brief Get the x-coordinate of the piece on the chessboard.
+ *
+ * @return The x-coordinate.
+ */
 int pieceOnBoard::giveXCoord()
 {
     return xCoord;
 };
 
+/**
+ * @brief Get the y-coordinate of the piece on the chessboard.
+ *
+ * @return The y-coordinate.
+ */
 int pieceOnBoard::giveYCoord()
 {
     return yCoord;
 };
 
+/**
+ * @brief Delete the image of the piece from the QGraphicsScene.
+ */
 void pieceOnBoard::deleteImage()
 {
     if (image)

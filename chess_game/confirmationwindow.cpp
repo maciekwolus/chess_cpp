@@ -2,6 +2,13 @@
 #include "ui_confirmationwindow.h"
 #include "gamewindow.h"
 
+/**
+ * @brief Constructor for ConfirmationWindow class.
+ *
+ * @param gameWindow A pointer to the GameWindow associated with this confirmation dialog.
+ * @param givenGameStatus The confirmation status (e.g., EXIT_GAME, RESTART_GAME).
+ * @param parent The parent widget.
+ */
 ConfirmationWindow::ConfirmationWindow(GameWindow *gameWindow, ConfirmationStatus givenGameStatus, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ConfirmationWindow)
@@ -9,38 +16,43 @@ ConfirmationWindow::ConfirmationWindow(GameWindow *gameWindow, ConfirmationStatu
     gameWindowStore = gameWindow;
     ui->setupUi(this);
     gameStatus = givenGameStatus;
-    ui->massege_label->setText(setTextMassege());
+    ui->massege_label->setText(setTextMessage());
 }
 
+/**
+ * @brief Destructor for ConfirmationWindow class.
+ */
 ConfirmationWindow::~ConfirmationWindow()
 {
     delete ui;
 }
 
-// When button 'yes' clicked
+/**
+ * @brief Slot for the "Yes" button click event.
+ */
 void ConfirmationWindow::on_pushButton_yes_clicked()
 {
-    // if exit game is true then whole app is closed
+    // if exit game is true then the whole app is closed
     if (gameStatus == EXIT_GAME)
     {
        QCoreApplication::quit();
     }
-
-    // else if the confirmation windows close and the game window shows again
+    // else if the confirmation window closes and the game window shows again
     else
     {
         gameWindowStore->close();
-        gameWindowStore = NULL;
+        gameWindowStore = nullptr;
         gameWindowStore = new GameWindow(this);
         gameWindowStore->show();
         hide();
     }
-
-    // back to default
+    // Reset to default
     gameStatus = EMPTY;
 }
 
-// When button 'no' clicked it comes back to the game
+/**
+ * @brief Slot for the "No" button click event.
+ */
 void ConfirmationWindow::on_pushButton_no_clicked()
 {
     // Restarting or exiting
@@ -50,15 +62,19 @@ void ConfirmationWindow::on_pushButton_no_clicked()
         hide();
         gameStatus = EMPTY;
     }
-    // Game ended and no one want to restart
+    // Game ended and no one wants to restart
     else
     {
         QCoreApplication::quit();
     }
 }
 
-// Set text massege
-QString ConfirmationWindow::setTextMassege()
+/**
+ * @brief Set the text message to display in the confirmation window.
+ *
+ * @return The text message to display.
+ */
+QString ConfirmationWindow::setTextMessage()
 {
     if (gameStatus == EXIT_GAME)
     {
@@ -80,5 +96,5 @@ QString ConfirmationWindow::setTextMassege()
     {
        return "Stalemate! Do you want to restart the game?";
     }
-    return "noting";
+    return "nothing";
 }

@@ -1,16 +1,27 @@
 #include <iostream>
 #include "pawn.h"
 
-// Constructor
+/**
+ * @brief Constructor for Pawn class.
+ *
+ * @param c The color of the Pawn (WHITE or BLACK).
+ */
 Pawn::Pawn(Color c) : Piece(PAWN, c) {}
 
-// It push by 1, but first move he can 2. It beats up vertical. Weird guy
+/**
+ * @brief Check if the Pawn can make a valid move.
+ *
+ * @param board The chessboard on which the move is being checked.
+ * @param fromCoords The coordinates of the current position of the Pawn.
+ * @param toCoords The coordinates of the destination position.
+ * @return true if the move is valid for a Pawn, false otherwise.
+ */
 bool Pawn::isValidMove(const Board *board, const std::pair<int, int> &fromCoords, const std::pair<int, int> &toCoords) const
 {
-    // Move lenght might
+    // Move length
     int moveLength = board->getMoveLength(fromCoords, toCoords);
 
-    // It has to move forward (white go from bottom to top, black from top to bottom)
+    // It has to move forward (white goes from bottom to top, black goes from top to bottom)
     if (!board->isForwardMove(fromCoords, toCoords, this))
     {
         return false;
@@ -40,7 +51,7 @@ bool Pawn::isValidMove(const Board *board, const std::pair<int, int> &fromCoords
     // If it moves - length 1 or 2, clear path, nothing between, 2 can be when first move
     if (board->isVerticalMove(fromCoords, toCoords))
     {
-        // Occupied by same color?
+        // Occupied by the same color?
         if (board->isOccupied(toCoords))
         {
             return false;
@@ -65,8 +76,6 @@ bool Pawn::isValidMove(const Board *board, const std::pair<int, int> &fromCoords
         }
     }
 
-
-    // Not a valid if the condition are not made
+    // Not valid if the conditions are not met
     return false;
-
 }

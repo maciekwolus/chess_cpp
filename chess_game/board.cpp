@@ -16,6 +16,14 @@
 #include <ctime>
 #include <sstream>
 
+/**
+ * @file
+ * @brief Contains the implementation of the Board class.
+ */
+
+/**
+ * @brief Constructs a new Board object and initializes the chessboard.
+ */
 Board::Board()
 {
     prepSquares();
@@ -27,13 +35,15 @@ Board::Board()
     createKings();
 }
 
-// Squares - stored in a map - pair to unique_ptr to Square object
-// e.g. a8 is a std::pair<0,0>
+/**
+ * @brief Initializes the chessboard with empty squares.
+ *
+ * The chessboard is represented as a map of coordinates to Square objects.
+ */
 void Board::prepSquares()
 {
     for (int i = 0; i < 8; i++)
     {
-
         for (int j = 0; j < 8; j++)
         {
             squares.insert(std::pair <std::pair <int, int>, std::unique_ptr<Square>> (std::make_pair(i, j), std::make_unique<Square>()));
@@ -41,13 +51,23 @@ void Board::prepSquares()
     }
 }
 
-// Put piece to location in the map
+/**
+ * @brief Places a piece on the chessboard at the specified coordinates.
+ *
+ * @param coords The coordinates where the piece should be placed.
+ * @param piece The piece to place on the board.
+ * @return A pointer to the placed piece.
+ */
 std::unique_ptr<Piece> Board::setPiece(const std::pair<int, int> &coords, std::unique_ptr<Piece> piece)
 {
     return squares[coords]->setPiece(std::move(piece));
 }
 
-// creates Pawns on places
+/**
+ * @brief Creates and places pawn pieces on the chessboard.
+ *
+ * Pawns are placed on their initial starting positions for both white and black.
+ */
 void Board::createPawns()
 {
     // White pawns
@@ -71,7 +91,11 @@ void Board::createPawns()
     setPiece(std::make_pair(1, 7), std::make_unique<Pawn>(BLACK));
 }
 
-// creates Rooks on places
+/**
+ * @brief Creates and places rook pieces on the chessboard.
+ *
+ * Rooks are placed on their initial starting positions for both white and black.
+ */
 void Board::createRooks()
 {
     // White Rooks
@@ -83,7 +107,11 @@ void Board::createRooks()
     setPiece(std::make_pair(0, 7), std::make_unique<Rook>(BLACK));
 }
 
-// creates Knights on places
+/**
+ * @brief Creates and places knight pieces on the chessboard.
+ *
+ * Knights are placed on their initial starting positions for both white and black.
+ */
 void Board::createKnights()
 {
     // White Knights
@@ -95,7 +123,11 @@ void Board::createKnights()
     setPiece(std::make_pair(0, 6), std::make_unique<Knight>(BLACK));
 }
 
-// creates Bishops on places
+/**
+ * @brief Creates and places bishop pieces on the chessboard.
+ *
+ * Bishops are placed on their initial starting positions for both white and black.
+ */
 void Board::createBishops()
 {
     // White Bishops
@@ -107,7 +139,11 @@ void Board::createBishops()
     setPiece(std::make_pair(0, 5), std::make_unique<Bishop>(BLACK));
 }
 
-// creates Queens on places
+/**
+ * @brief Creates and places queen pieces on the chessboard.
+ *
+ * Queens are placed on their initial starting positions for both white and black.
+ */
 void Board::createQueens()
 {
     // White Queen
@@ -117,7 +153,11 @@ void Board::createQueens()
     setPiece(std::make_pair(0, 3), std::make_unique<Queen>(BLACK));
 }
 
-// creates Kings on places
+/**
+ * @brief Creates and places king pieces on the chessboard.
+ *
+ * Kings are placed on their initial starting positions for both white and black.
+ */
 void Board::createKings()
 {
     // White King
@@ -127,15 +167,22 @@ void Board::createKings()
     setPiece(std::make_pair(0, 4), std::make_unique<King>(BLACK));
 }
 
-// change letters to number, e.g. a8 to <0,0>
+/**
+ * @brief Converts algebraic coordinates to integer coordinates.
+ *
+ * @param algebraicCoords The algebraic coordinates to convert (e.g., "a8").
+ * @return A pair of integers representing the converted coordinates (e.g., <0,0>).
+ */
 std::pair<int, int> Board::algebraicToInt(std::string algebraicCoords) const
 {
-    int col = algebraicCoords[0] - 'a'; 			// letter to int
-    int row = 8 - (algebraicCoords[1] - '0');		// ascii letter to int and flip
-    return std::make_pair(row,col);
+    int col = algebraicCoords[0] - 'a'; // Convert letter to int
+    int row = 8 - (algebraicCoords[1] - '0'); // Convert ASCII character to int and flip
+    return std::make_pair(row, col);
 }
 
-// Switch color turn
+/**
+ * @brief Switches the color whose turn it is to play.
+ */
 void Board::switchColor()
 {
     if (colorTurn == WHITE)
@@ -146,16 +193,26 @@ void Board::switchColor()
     {
         colorTurn = WHITE;
     }
-
 }
 
-// Returns the piece at a given square
+/**
+ * @brief Retrieves the piece at a given square.
+ *
+ * @param coords The coordinates of the square to check.
+ * @return A pointer to the piece at the specified coordinates, or nullptr if no piece is present.
+ */
 Piece* Board::getPiece(const std::pair<int, int> coords) const
 {
     return squares.find(coords)->second->getPiece();
 }
 
-// Number of board pixels between locations
+/**
+ * @brief Calculates the number of board pixels between two locations.
+ *
+ * @param fromCoords The starting coordinates.
+ * @param toCoords The destination coordinates.
+ * @return The length of the move in terms of board pixels.
+ */
 int Board::getMoveLength(const std::pair<int, int> fromCoords, const std::pair<int, int> toCoords) const
 {
     if (isVerticalMove(fromCoords, toCoords))
@@ -168,16 +225,21 @@ int Board::getMoveLength(const std::pair<int, int> fromCoords, const std::pair<i
     }
     else if (isDiagonalMove(fromCoords, toCoords))
     {
-        return abs(toCoords.first - fromCoords.first); // if it goes one right and one up, let's say it's one and not sqrt from 2
+        return abs(toCoords.first - fromCoords.first); // If it goes one right and one up, consider it as one pixel.
     }
     else
     {
-        // -1 if all false
+        // Return -1 if none of the conditions are met (invalid move).
         return -1;
     }
 }
 
-// Checks if a given location is on the board
+/**
+ * @brief Checks if a given location is on the chessboard.
+ *
+ * @param coords The coordinates to check.
+ * @return true if the coordinates are on the board; false otherwise.
+ */
 bool Board::isOnBoard(const std::pair<int, int> coords) const
 {
     if (coords.first < 0 || coords.first > 7)
@@ -194,17 +256,29 @@ bool Board::isOnBoard(const std::pair<int, int> coords) const
     }
 }
 
-// Checks if a particular square is occupied. Returns true if so, false otherwise.
+/**
+ * @brief Checks if a particular square on the chessboard is occupied by a piece.
+ *
+ * @param coords The coordinates of the square to check.
+ * @return true if the square is occupied; false otherwise.
+ */
 bool Board::isOccupied(const std::pair<int, int> coords) const
 {
     return getPiece(coords) != nullptr;
 }
 
-// True when there is something in the same color
+/**
+ * @brief Checks if a particular square is occupied by a piece of the same color.
+ *
+ * @param fromCoords The coordinates of the source square.
+ * @param toCoords The coordinates of the destination square.
+ * @return true if the destination square is occupied by a piece of the same color as the source square; false otherwise.
+ */
 bool Board::isOccupiedSameColor(const std::pair<int, int> fromCoords, const std::pair<int, int> toCoords) const
 {
-    const Piece *fromPiece = getPiece(fromCoords);
+    const Piece* fromPiece = getPiece(fromCoords);
     Color fromColor;
+
     if (fromPiece != nullptr)
     {
         fromColor = fromPiece->getColor();
@@ -214,8 +288,9 @@ bool Board::isOccupiedSameColor(const std::pair<int, int> fromCoords, const std:
         return false;
     }
 
-    const Piece *toPiece = getPiece(toCoords);
+    const Piece* toPiece = getPiece(toCoords);
     Color toColor;
+
     if (toPiece != nullptr)
     {
         toColor = toPiece->getColor();
@@ -228,11 +303,18 @@ bool Board::isOccupiedSameColor(const std::pair<int, int> fromCoords, const std:
     return fromColor == toColor;
 }
 
-// True when there is something in a different same color
+/**
+ * @brief Checks if a particular square is occupied by a piece of a different color.
+ *
+ * @param fromCoords The coordinates of the source square.
+ * @param toCoords The coordinates of the destination square.
+ * @return true if the destination square is occupied by a piece of a different color than the source square; false otherwise.
+ */
 bool Board::isOccupiedDifferentColor(const std::pair<int, int> fromCoords, const std::pair<int, int> toCoords) const
 {
-    const Piece *fromPiece = getPiece(fromCoords);
+    const Piece* fromPiece = getPiece(fromCoords);
     Color fromColor;
+
     if (fromPiece != nullptr)
     {
         fromColor = fromPiece->getColor();
@@ -242,8 +324,9 @@ bool Board::isOccupiedDifferentColor(const std::pair<int, int> fromCoords, const
         return false;
     }
 
-    const Piece *toPiece = getPiece(toCoords);
+    const Piece* toPiece = getPiece(toCoords);
     Color toColor;
+
     if (toPiece != nullptr)
     {
         toColor = toPiece->getColor();
@@ -256,28 +339,54 @@ bool Board::isOccupiedDifferentColor(const std::pair<int, int> fromCoords, const
     return fromColor != toColor;
 }
 
-// Same column - move is vertical
+/**
+ * @brief Checks if a move is vertical.
+ *
+ * @param fromCoords The coordinates of the source square.
+ * @param toCoords The coordinates of the destination square.
+ * @return true if the move is vertical (up or down); false otherwise.
+ */
 bool Board::isVerticalMove(const std::pair<int, int> fromCoords, const std::pair<int, int> toCoords) const
 {
     return fromCoords.second == toCoords.second;
 }
 
-// Same row - move is horizontal
+/**
+ * @brief Checks if a move is horizontal.
+ *
+ * @param fromCoords The coordinates of the source square.
+ * @param toCoords The coordinates of the destination square.
+ * @return true if the move is horizontal (left or right); false otherwise.
+ */
 bool Board::isHorizontalMove(const std::pair<int, int> fromCoords, const std::pair<int, int> toCoords) const
 {
     return fromCoords.first == toCoords.first;
 }
 
-// Difference between vertical and horizontal are the same - move is diagonal
+/**
+ * @brief Checks if a move is diagonal.
+ *
+ * @param fromCoords The coordinates of the source square.
+ * @param toCoords The coordinates of the destination square.
+ * @return true if the move is diagonal (like that of a bishop); false otherwise.
+ */
 bool Board::isDiagonalMove(const std::pair<int, int> fromCoords, const std::pair<int, int> toCoords) const
 {
     return abs(toCoords.first - fromCoords.first) == abs(toCoords.second - fromCoords.second);
 }
 
-// Check if white go from bottom to top and black from top to bottom
-bool Board::isForwardMove(const std::pair<int, int> fromCoords, const std::pair<int, int> toCoords, const Piece *piece) const
+/**
+ * @brief Checks if a pawn move is forward based on its color.
+ *
+ * @param fromCoords The coordinates of the source square.
+ * @param toCoords The coordinates of the destination square.
+ * @param piece A pointer to the pawn piece.
+ * @return true if the pawn move is in the forward direction based on its color; false otherwise.
+ */
+bool Board::isForwardMove(const std::pair<int, int> fromCoords, const std::pair<int, int> toCoords, const Piece* piece) const
 {
     Color pieceColor = piece->getColor();
+
     if (pieceColor == BLACK && fromCoords.first < toCoords.first)
     {
         return true;
@@ -292,28 +401,37 @@ bool Board::isForwardMove(const std::pair<int, int> fromCoords, const std::pair<
     }
 }
 
-// Check if there is a piece between the start and end coordinates (except pawn - he is dumb and different)
+/**
+ * @brief Checks if there is a clear path between the start and end coordinates for a piece.
+ *
+ * This function checks if there are no pieces in the path between the specified start and end coordinates.
+ * It takes into account the direction of movement (vertical, horizontal, or diagonal).
+ *
+ * @param fromCoords The coordinates of the source square.
+ * @param toCoords The coordinates of the destination square.
+ * @return true if the path between the start and end coordinates is clear; false if there is any obstruction.
+ */
 bool Board::isPathClear(const std::pair<int, int> fromCoords, const std::pair<int, int> toCoords) const
 {
     // Start parameters
-    int moveLength = getMoveLength(fromCoords, toCoords);       // Lenght of move
-    bool movingDown = fromCoords.first < toCoords.first; 		// From black side to white side (up to bottom)
-    bool movingRight = fromCoords.second < toCoords.second;		// From left to right
+    int moveLength = getMoveLength(fromCoords, toCoords); // Length of move
+    bool movingDown = fromCoords.first < toCoords.first;   // Moving from black side to white side (top to bottom)
+    bool movingRight = fromCoords.second < toCoords.second; // Moving from left to right
 
-    // Same or 1 - if it's not occupied then definitely true
+    // If the move length is 0 or 1, there are no intermediate squares to check.
     if (moveLength == 0 || moveLength == 1)
     {
         return true;
     }
 
-    // Temp needed to prevent coords change
-    std::pair<int,int> fromTemp = fromCoords;
-    std::pair<int,int> toTemp = toCoords;
+    // Temporarily swap coordinates if moving in the opposite direction to simplify checking
+    std::pair<int, int> fromTemp = fromCoords;
+    std::pair<int, int> toTemp = toCoords;
 
     // Check for VERTICAL move - from top to bottom or reverse
-    if (isVerticalMove(fromCoords, toCoords) == true)
+    if (isVerticalMove(fromCoords, toCoords))
     {
-        // Function is checking for moving down so if it's going up we change it to still check like it was move down (0 is at top and 7 and the bottom so i want it to increase)
+        // If moving up, swap coordinates to check as if moving down (0 is at the top and 7 at the bottom).
         if (!movingDown)
         {
             std::swap(fromTemp, toTemp);
@@ -327,14 +445,14 @@ bool Board::isPathClear(const std::pair<int, int> fromCoords, const std::pair<in
             }
         }
 
-        // Checked all between - all clear
+        // Checked all squares in between - the path is clear.
         return true;
     }
 
     // Check for HORIZONTAL move - from left to right or reverse
-    else if (isHorizontalMove(fromCoords, toCoords) == true)
+    else if (isHorizontalMove(fromCoords, toCoords))
     {
-        // Function is checking for moving from left to right so if it's going up we change it to still check like it was like that (0 is at left and 7 and the right so i want it to increase)
+        // If moving from right to left, swap coordinates to check as if moving from left to right (0 is at the left and 7 at the right).
         if (!movingRight)
         {
             std::swap(fromTemp, toTemp);
@@ -348,14 +466,13 @@ bool Board::isPathClear(const std::pair<int, int> fromCoords, const std::pair<in
             }
         }
 
-        // Checked all between - all clear
+        // Checked all squares in between - the path is clear.
         return true;
     }
 
     // Check for DIAGONAL move
-    else if (isDiagonalMove(fromCoords, toCoords) == true)
+    else if (isDiagonalMove(fromCoords, toCoords))
     {
-        // Not gonna lie - do not really know how it all works in diagonal, but lot of debugging (and a little gpt help) make it work >.<
         if (movingDown == movingRight)
         {
             if (!movingDown && !movingRight)
@@ -373,9 +490,8 @@ bool Board::isPathClear(const std::pair<int, int> fromCoords, const std::pair<in
                 col++;
             }
 
-            // Checked all between - all clear
+            // Checked all squares in between - the path is clear.
             return true;
-
         }
         else if (movingDown != movingRight)
         {
@@ -394,67 +510,91 @@ bool Board::isPathClear(const std::pair<int, int> fromCoords, const std::pair<in
                 col++;
             }
 
-            // Checked all between - all clear
+            // Checked all squares in between - the path is clear.
             return true;
         }
     }
 
-    // Path NOT IN (vertical, horizontal, diagonal) - do not have to change that then as the move is definitely wrong
+    // Path is not vertical, horizontal, or diagonal - the move is invalid.
     return false;
 }
 
-// Check if move is valid
-bool Board::isValidMove(const std::pair<int, int> &fromCoords, const std::pair<int, int> &toCoords) const
+/**
+ * @brief Checks if a move from the source square to the destination square is valid.
+ *
+ * This function performs several checks to determine if a move is valid:
+ * 1. Checks if the source and destination squares are on the board.
+ * 2. Checks if the destination square is occupied by a piece of the same color as the source square.
+ * 3. Checks if there is a piece at the source square.
+ * 4. Calls the `isValidMove` function of the piece to check if it's a valid move for that piece.
+ *
+ * @param fromCoords The coordinates of the source square.
+ * @param toCoords The coordinates of the destination square.
+ * @return true if the move is valid; false otherwise.
+ */
+bool Board::isValidMove(const std::pair<int, int>& fromCoords, const std::pair<int, int>& toCoords) const
 {
     // Check if from and to locations are on the board
     if (!isOnBoard(fromCoords) || !isOnBoard(toCoords))
     {
-        // qDebug() << "WARNING - you can't move out of board";
+        // qDebug() << "WARNING - you can't move out of the board";
         return false;
     }
 
-     // Check if to location is occupied by piece of same color
+    // Check if the destination location is occupied by a piece of the same color
     if (isOccupiedSameColor(fromCoords, toCoords))
     {
-        // qDebug() << "WARNING - you can't move here because it's occupied (same color piece stays here)";
+        // qDebug() << "WARNING - you can't move here because it's occupied by a piece of the same color";
         return false;
     }
 
-    // Check if there is a piece
-    const Piece *piece = getPiece(fromCoords);
+    // Check if there is a piece at the source location
+    const Piece* piece = getPiece(fromCoords);
     if (piece == nullptr)
     {
-        // qDebug() << "WARNING - no piece here";
+        // qDebug() << "WARNING - no piece at the source location";
         return false;
     }
 
-    // Check if this is a valid move for this piece
+    // Check if this is a valid move for the piece
     if (!piece->isValidMove(this, fromCoords, toCoords))
     {
-        // qDebug() << "WARNING - not a valid move";
+        // qDebug() << "WARNING - not a valid move for this piece";
         return false;
     }
 
-    // If you are here then it is ture
+    // If all checks pass, the move is valid
     return true;
 }
 
-// Move piece without any checking (used to move rook in castle for example)
+/**
+ * @brief Moves a piece from one square to another without any checking.
+ *
+ * This function is used to move a piece from the source square to the destination square without performing any validity checks.
+ *
+ * @param fromCoords The coordinates of the source square.
+ * @param toCoords The coordinates of the destination square.
+ */
 void Board::forceMovePiece(const std::pair<int, int> fromCoords, const std::pair<int, int> toCoords)
 {
     setPiece(toCoords, setPiece(fromCoords, nullptr));
 }
 
-// Undo last move
+/**
+ * @brief Reverts the last move made on the board.
+ *
+ * This function undoes the last move made on the board. It moves the piece back to its original position and, if the last move
+ * resulted in a capture, it restores the captured piece to the board.
+ */
 void Board::revertLastMove()
 {
-    // Get last move from moves vector
+    // Get the last move from the moves vector
     std::pair<std::pair<int, int>, std::pair<int, int>> lastMove = moves.back();
 
-    // Undo last move
+    // Undo the last move
     forceMovePiece(lastMove.second, lastMove.first);
 
-    // If last move was a capture, then replace captured piece
+    // If the last move was a capture, then replace the captured piece
     int previousMove = moves.size() - 1;
     if (capturedPieces.find(previousMove) != capturedPieces.end())
     {
@@ -465,56 +605,80 @@ void Board::revertLastMove()
         capturedPieces.erase(previousMove);
     }
 
-    // Remove it from move vector
+    // Remove the last move from the moves vector
     moves.pop_back();
 
-    // Decrement move counter in piece
+    // Decrement the move counter in the piece
     getPiece(lastMove.first)->decrementMoves();
 }
 
-// Check if piece color is same as turn color
+/**
+ * @brief Checks if a piece at the given coordinates has the same color as the current turn color.
+ *
+ * This function checks if the piece at the specified coordinates has the same color as the current turn color.
+ *
+ * @param fromCoords The coordinates of the square containing the piece to be checked.
+ * @return true if the piece has the same color as the current turn color; false otherwise.
+ */
 bool Board::checkPieceColor(const std::pair<int, int> fromCoords) const
 {
-    // iterate through all squares with pointers to pieces
+    // Iterate through all squares with pointers to pieces
     for (auto const& square : squares)
     {
         Piece* piece = square.second->getPiece();
 
-        // if piece on given coordinates has same color, then true
+        // If the piece on the given coordinates has the same color as the current turn color, return true
         if (square.first == fromCoords && piece->getColor() == colorTurn)
         {
             return true;
         }
     }
 
-    // if no piece on that coordinates with matching color then false
+    // If no piece on those coordinates matches the color of the current turn, return false
     return false;
 }
 
-// Gives a color of move
+/**
+ * @brief Returns the current color whose turn it is to move.
+ *
+ * This function returns the color (either WHITE or BLACK) indicating whose turn it is to make a move.
+ *
+ * @return The color representing the current turn.
+ */
 Color Board::getColor()
 {
     return colorTurn;
 }
 
-// Move piece - change the coordinates of the piece
-bool Board::movePiece(const std::pair<int, int> &fromCoords, const std::pair<int, int> &toCoords)
+/**
+ * @brief Moves a piece from one square to another.
+ *
+ * This function attempts to move a piece from the source square to the destination square. It performs several checks to ensure
+ * the move is valid, including checking for path obstruction and capturing. If the move is valid, it updates the board and stores
+ * the move in the moves vector.
+ *
+ * @param fromCoords The coordinates of the source square.
+ * @param toCoords The coordinates of the destination square.
+ * @return true if the move is successful; false if the move is invalid.
+ */
+bool Board::movePiece(const std::pair<int, int>& fromCoords, const std::pair<int, int>& toCoords)
 {
     if (isValidMove(fromCoords, toCoords))
     {
-        // If the piece represents a capture (i.e., destination is occupied), then save captured piece
+        // If the destination square is occupied, save the captured piece
         if (squares[toCoords]->getPiece() != nullptr)
         {
             int index = moves.size();
             capturedPieces.insert(std::pair<int, std::unique_ptr<Piece>>(index, setPiece(toCoords, nullptr)));
         }
 
-        // setPiece inside check if something is already at this loaction. If there is, it puts a null here and return the old coordinates
-        // So it's remove if something is here and do nothing when there's nothing
+        // Move the piece from the source square to the destination square
         setPiece(toCoords, setPiece(fromCoords, nullptr));
 
-        // Change the value of piece moves (useful for pawn move for example)
+        // Increment the move counter for the moved piece
         getPiece(toCoords)->incrementMoves();
+
+        // Store the move in the moves vector
         moves.emplace_back(fromCoords, toCoords);
 
         return true;
@@ -523,19 +687,29 @@ bool Board::movePiece(const std::pair<int, int> &fromCoords, const std::pair<int
     return false;
 }
 
-// Check if the move is castling
+/**
+ * @brief Checks if a move represents castling and performs castling if valid.
+ *
+ * This function checks if the given move represents a castling move and, if so, performs castling if the move is valid.
+ * Castling is a special chess move involving the king and a rook.
+ *
+ * @param toMove The color whose turn it is to move.
+ * @param from The starting coordinates for the move.
+ * @param to The destination coordinates for the move.
+ * @return true if the castling move is valid and executed; false otherwise.
+ */
 bool Board::castle(const Color toMove, const std::pair<int, int> from, const std::pair<int, int> to)
 {
-    // Check if it's the king at the start coordinates
+    // Check if it's the king at the starting coordinates
     if (getKingLocation(toMove) != from)
     {
         return false;
     }
 
-    // Get the rook we're going to castle with and intermediate location
+    // Determine the rook location and the intermediate location between the king and rook
     Piece* rook;
-    std::pair<int,int> intermediateLocation; // position between rook and king
-    std::pair<int,int> rookLocation;
+    std::pair<int, int> intermediateLocation; // Position between rook and king
+    std::pair<int, int> rookLocation;
     if (to == algebraicToInt("g8"))
     {
         rookLocation = algebraicToInt("h8");
@@ -564,75 +738,75 @@ bool Board::castle(const Color toMove, const std::pair<int, int> from, const std
     // Get a pointer to the rook
     rook = getPiece(rookLocation);
 
-    // Check if there is a clear path between them and that it's a horizontal move
+    // Check if there is a clear path between the king and rook, and that it's a horizontal move
     if (!isPathClear(from, rookLocation) || !isHorizontalMove(from, to))
     {
         return false;
     }
 
-    // Check if king is not in check
+    // Check if the king is not in check
     if (isInCheck(toMove))
     {
         return false;
     }
 
-    // Check if rook and king haven't moved
+    // Check if the rook and king haven't moved
     if (getPiece(from)->getMoved() || rook->getMoved())
     {
         return false;
     }
 
-    // King can not be in check after the move
-    // First step for king
+    // Make the first step for the king (moving to the intermediate location)
     if (movePiece(from, intermediateLocation))
     {
-        // Verify that move doesn't put player in check
+        // Verify that the move doesn't put the player in check
         if (isInCheck(toMove))
         {
-            // If move puts player in check, revert move, and let player enter different move
+            // If the move puts the player in check, revert the move and let the player enter a different move
             revertLastMove();
             return false;
         }
-
     }
-    // Second step for king
+
+    // Make the second step for the king (moving to the final destination)
     if (movePiece(intermediateLocation, to))
     {
-        // Verify that move doesn't put player in check
+        // Verify that the move doesn't put the player in check
         if (isInCheck(toMove))
         {
-            // If move puts player in check, revert last two moves, and let player enter different move
+            // If the move puts the player in check, revert the last two moves and let the player enter a different move
             revertLastMove();
             revertLastMove();
             return false;
         }
     }
 
-    // Ling has moved legally. Rook can move
+    // The king has moved legally, now move the rook
     forceMovePiece(rookLocation, intermediateLocation);
 
     return true;
 }
 
-// Check if someone is in check
+/**
+ * @brief Checks if the king of the given color is in check.
+ *
+ * This function determines if the king of the specified color is currently in check. It checks if any opposing pieces can attack
+ * the king's position.
+ *
+ * @param defendingColor The color of the king to check for being in check.
+ * @return true if the king is in check; false otherwise.
+ */
 bool Board::isInCheck(Color defendingColor) const
 {
-    // Gettin opposite sites
-    Color attackingColor;
-    if (defendingColor == WHITE)
-    {
-        attackingColor = BLACK;
-    }
-    else
-    {
-        attackingColor = WHITE;
-    }
+    // Get the opposite side (attacking color)
+    Color attackingColor = (defendingColor == WHITE) ? BLACK : WHITE;
 
-    // Get locations of defending king and attacking pieces
+    // Get the locations of the defending king and attacking pieces
     std::pair<int, int> kingLocation = getKingLocation(defendingColor);
     std::vector<std::pair<int, int>> pieceLocations = getPieceLocations(attackingColor);
 
-    for (auto attackingPiece : pieceLocations)
+    // Check if any attacking piece can move to the king's location
+    for (const auto& attackingPiece : pieceLocations)
     {
         if (isValidMove(attackingPiece, kingLocation))
         {
@@ -640,14 +814,22 @@ bool Board::isInCheck(Color defendingColor) const
         }
     }
 
-    // Not chech if u r here
+    // If the king is not in check, return false
     return false;
 }
 
-// Gives a king location of a given color
+/**
+ * @brief Returns the location of the king of a given color.
+ *
+ * This function finds and returns the location of the king of the specified color on the chessboard.
+ *
+ * @param color The color of the king to locate (either WHITE or BLACK).
+ * @return The coordinates (row, column) of the king.
+ */
 std::pair<int, int> Board::getKingLocation(Color color) const
 {
-    for (auto const& square : squares) {
+    for (const auto& square : squares)
+    {
         Piece* piece = square.second->getPiece();
         if (piece != nullptr && piece->getColor() == color && piece->getType() == KING)
         {
@@ -655,17 +837,24 @@ std::pair<int, int> Board::getKingLocation(Color color) const
         }
     }
 
-    // King is never removed from the board = never execute
-    return std::make_pair(-1,-1);
+    // This code should never execute if the king is present on the board
+    return std::make_pair(-1, -1);
 }
 
-// Gives all locations of pieces of a given color.
+/**
+ * @brief Returns the locations of all pieces of a given color.
+ *
+ * This function finds and returns the locations of all pieces of the specified color currently on the chessboard.
+ *
+ * @param color The color of the pieces to locate (either WHITE or BLACK).
+ * @return A vector of coordinates (row, column) representing the locations of the pieces.
+ */
 std::vector<std::pair<int, int>> Board::getPieceLocations(Color color) const
 {
     std::vector<std::pair<int, int>> pieceLocations;
     pieceLocations.reserve(squares.size());
 
-    for (auto const& square : squares)
+    for (const auto& square : squares)
     {
         Piece* piece = square.second->getPiece();
         if (piece != nullptr && piece->getColor() == color)
@@ -677,21 +866,37 @@ std::vector<std::pair<int, int>> Board::getPieceLocations(Color color) const
     return pieceLocations;
 }
 
-// Returns Location of all pieces in vector
+/**
+ * @brief Returns the locations of all squares on the chessboard.
+ *
+ * This function returns the coordinates (row, column) of all squares on the chessboard.
+ *
+ * @return A vector of coordinates representing all squares on the chessboard.
+ */
 std::vector<std::pair<int, int>> Board::getLocations() const
 {
-    std::vector<std::pair<int, int>> pieceLocations;
-    pieceLocations.reserve(squares.size());
+    std::vector<std::pair<int, int>> squareLocations;
+    squareLocations.reserve(squares.size());
 
-    for (auto const& square : squares)
+    for (const auto& square : squares)
     {
-        pieceLocations.push_back(square.first);
+        squareLocations.push_back(square.first);
     }
 
-    return pieceLocations;
+    return squareLocations;
 }
 
-// Check if checkmate - in check and has no moves
+/**
+ * @brief Checks if the current player is in checkmate.
+ *
+ * This function determines whether the current player, with the specified defending color, is in checkmate.
+ * It first checks if the player is in check. If the player is in check, it iterates through all their pieces
+ * and potential move destinations to see if any move can remove the king from check. If such a move is found,
+ * the function returns false (not in checkmate). Otherwise, if no move can remove the king from check, it returns true (checkmate).
+ *
+ * @param defendingColor The color of the player to check for checkmate.
+ * @return true if the player is in checkmate; false otherwise.
+ */
 bool Board::isInCheckMate(Color defendingColor)
 {
     if (isInCheck(defendingColor))
@@ -699,21 +904,22 @@ bool Board::isInCheckMate(Color defendingColor)
         std::vector<std::pair<int, int>> pieceLocations = getPieceLocations(defendingColor);
         std::vector<std::pair<int, int>> locations = getLocations();
 
-        for (auto const &pieceLocation : pieceLocations)
+        for (const auto &pieceLocation : pieceLocations)
         {
-            for (auto const &location : locations)
+            for (const auto &location : locations)
             {
-                // try to move piece
+                // Try to move the piece
                 if (movePiece(pieceLocation, location))
                 {
-                    // if player is no in check, then he has moves - undo move and return false
+                    // If the player is not in check after the move, then they have a valid move to escape check.
                     if (!isInCheck(defendingColor))
                     {
+                        // Revert the last move and return false (not in checkmate)
                         revertLastMove();
-                        return false; // not in check
+                        return false; // Not in checkmate
                     }
 
-                    // revert the last move if the player was still in check and continue looping (or end game)
+                    // Revert the last move if the player was still in check and continue looping (or end the game).
                     revertLastMove();
                 }
             }
@@ -724,11 +930,21 @@ bool Board::isInCheckMate(Color defendingColor)
         return false;
     }
 
-    // return true when checkmate
+    // Return true when in checkmate
     return true;
 }
 
-// Check if stalemate - NOT in check and has no moves
+/**
+ * @brief Checks if the current player is in stalemate.
+ *
+ * This function determines whether the current player, with the specified defending color, is in stalemate.
+ * It first checks if the player is in check. If the player is not in check, it iterates through all their pieces
+ * and potential move destinations to see if any move can be made. If such a move is found, the function returns false (not in stalemate).
+ * Otherwise, if no move can be made, it returns true (stalemate).
+ *
+ * @param defendingColor The color of the player to check for stalemate.
+ * @return true if the player is in stalemate; false otherwise.
+ */
 bool Board::isInStalemate(Color defendingColor)
 {
     if (isInCheck(defendingColor))
@@ -740,32 +956,44 @@ bool Board::isInStalemate(Color defendingColor)
         std::vector<std::pair<int, int>> pieceLocations = getPieceLocations(defendingColor);
         std::vector<std::pair<int, int>> locations = getLocations();
 
-        for (auto const &pieceLocation : pieceLocations)
+        for (const auto &pieceLocation : pieceLocations)
         {
-            for (auto const &location : locations)
+            for (const auto &location : locations)
             {
-                // try to move piece
+                // Try to move the piece
                 if (movePiece(pieceLocation, location))
                 {
-                    // if player is no in check, then he has moves - undo move and return false
+                    // If the player is not in check after the move, then they have a valid move to make.
                     if (!isInCheck(defendingColor))
                     {
+                        // Revert the last move and return false (not in stalemate)
                         revertLastMove();
-                        return false; // not in stalemate
+                        return false; // Not in stalemate
                     }
 
-                    // revert the last move if the player was still in check and continue looping (or end game)
+                    // Revert the last move if the player was still in check and continue looping (or end the game).
                     revertLastMove();
                 }
             }
         }
     }
 
-    // return true when checkmate stalemate
+    // Return true when in stalemate
     return true;
 }
 
-// Ends game when it checkmate or stealmate
+/**
+ * @brief Ends the chess game if it's in checkmate or stalemate.
+ *
+ * This function checks if the game has ended due to either checkmate or stalemate for the specified player.
+ * If the player is in checkmate, the game is considered ended, and the function returns true with a message indicating
+ * which color has won. If the player is in stalemate, the game is also considered ended, and the function returns true
+ * with a message indicating that it's a draw. If neither of these conditions is met, the function returns false, indicating
+ * that the game continues.
+ *
+ * @param toMove The color of the player who is currently making a move.
+ * @return true if the game has ended; false if the game continues.
+ */
 bool Board::endGame(Color toMove)
 {
     Color defendingColor = toMove;
@@ -784,7 +1012,14 @@ bool Board::endGame(Color toMove)
     return false;
 }
 
-// Get a timestamp to a filename
+/**
+ * @brief Generates a timestamp for use in a filename.
+ *
+ * This function generates a timestamp in the format "YYYYMMDDHHMMSS" and returns it as a string.
+ * The timestamp is typically used to create unique filenames for saving game data.
+ *
+ * @return A string containing the timestamp.
+ */
 std::string Board::getCurrentTimestamp()
 {
     std::time_t now = std::time(nullptr);
@@ -793,34 +1028,43 @@ std::string Board::getCurrentTimestamp()
     return buffer;
 }
 
-// Saving moves to csv files
+/**
+ * @brief Saves the moves of the chess game to a CSV file.
+ *
+ * This function saves the moves of the chess game to a CSV (Comma-Separated Values) file with a filename
+ * that includes a timestamp to make it unique. The moves are written in the format:
+ * "from_row,from_column,to_row,to_column" for each move.
+ *
+ * @note The file is saved in a specified directory, and the filename includes a timestamp to ensure uniqueness.
+ * @throws std::runtime_error if there is an error opening the file for writing.
+ */
 void Board::saveMoves()
 {
-    std::string directory = "C:/Users/User/Desktop/priv/magazynierka/1P - C++ (projekt to do)/PROJECT_REPO/chess_cpp/games/"; // name of directory
-    std::string filename = directory + "ChessGame_" + getCurrentTimestamp() + ".csv"; // name of file which includes timestamp
-    std::ofstream outputFile(filename); // file with that name
+    std::string directory = "C:/Users/User/Desktop/priv/magazynierka/1P - C++ (projekt to do)/PROJECT_REPO/chess_cpp/games/"; // Name of the directory
+    std::string filename = directory + "ChessGame_" + getCurrentTimestamp() + ".csv"; // Filename with timestamp
+    std::ofstream outputFile(filename); // File with that name
 
-    // showing moves
+    // Showing moves (optional)
     /*for (const auto& move : moves)
     {
         qDebug() << "Move from (" << move.first.first << ", " << move.first.second
                      << ") to (" << move.second.first << ", " << move.second.second << ")";
     }*/
 
-    // check if file open
+    // Check if the file is open
     if (!outputFile.is_open())
     {
         throw std::runtime_error("Error opening file: " + filename);
     }
 
-    // add moves to file
+    // Add moves to the file
     for (const auto& move : moves)
     {
         outputFile << move.first.first << "," << move.first.second << ","
                    << move.second.first << "," << move.second.second << "\n";
     }
 
-    // close file
+    // Close the file
     outputFile.close();
     qDebug() << "Moves saved to " << filename;
 }
