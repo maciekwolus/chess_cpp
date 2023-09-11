@@ -196,6 +196,11 @@ bool GameWindow::eventFilter(QObject *obj, QEvent *event)
                             delete pieceToDelete; // Delete the object
                             piecesOnBoardList.erase(piecesOnBoardList.begin() + pieceToDeletePosition); // Remove it from the list
                         }
+
+                        if (board.promotePawn(board.getColor(), endCoordinates))
+                        {
+                            qDebug() << "PROMOCJA FRONT";
+                        }
                     }
                     // No valid move
                     else

@@ -983,6 +983,52 @@ bool Board::isInStalemate(Color defendingColor)
 }
 
 /**
+ * @brief Promote pawn to a queen if it goes to the end of board.
+ *
+ * Functions check if the color of piece is good and the piece which
+ * is moving is a pawn. Secondly, according to the color, it check if
+ * pawn is at the end. If it is - it changes into queen and returns true
+ * to the frontend.
+ *
+ * @param toMove The color of the player to move.
+ * @param coordinates The coordinates of the piece.
+ * @return true if it is the pawn to promote; false otherwise.
+ */
+bool Board::promotePawn(Color toMove, std::pair<int, int> coordinates)
+{
+    Piece *pieceToPromote = getPiece(coordinates); // Get index to piece
+
+    // Check if color is ok
+    if (toMove != colorTurn)
+    {
+        return false;
+    }
+
+    // Check if thats pawn
+    if(pieceToPromote->getType() != PAWN)
+    {
+        return false;
+    }
+
+    // Check if proper color at the end
+    if (toMove == BLACK && coordinates.first == 0)
+    {
+        // Promote white piece
+        setPiece(coordinates, std::make_unique<Queen>(WHITE));
+        return true;
+    }
+    else if (toMove == WHITE && coordinates.first == 7)
+    {
+        // Promote black piece
+        setPiece(coordinates, std::make_unique<Queen>(BLACK));
+        return true;
+    }
+
+    // Definitely nothing good happened if you are this far
+    return false;
+}
+
+/**
  * @brief Ends the chess game if it's in checkmate or stalemate.
  *
  * This function checks if the game has ended due to either checkmate or stalemate for the specified player.

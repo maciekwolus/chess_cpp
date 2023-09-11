@@ -195,6 +195,15 @@ public:
     bool castle(Color toMove, std::pair<int, int> from, std::pair<int, int> to);
 
     /**
+     * @brief Promote pawn to a queen if it goes to the end of board.
+     *
+     * @param toMove The color of the player to move.
+     * @param coordinates The coordinates of the piece.
+     * @return true if it is the pawn to promote; false otherwise.
+     */
+    bool promotePawn(Color toMove, std::pair<int, int> coordinates);
+
+    /**
      * @brief Ends the game when it's checkmate or stalemate.
      *
      * @param toMove The color of the player to move.
