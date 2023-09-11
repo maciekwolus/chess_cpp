@@ -25,10 +25,10 @@ public:
     void board_setup(); // showing the board
     void pieces_setup(); // showing the pieces at the begining
     bool eventFilter(QObject *obj, QEvent *event); // catching all events on board
-    char getColumnLetter(int x); // gives a letter of column
-    int getRowNumber(int y); // gives a number of a row
-    int getColumnPixel(char column); // gives a spot of column
-    int getRowPixel(int row); // gives a spot of column
+    template<typename T> T getColumnLetter(int x) ; // gives a letter of column
+    template<typename T> T getRowNumber(int y); // gives a number of a row
+    template<typename T> T getColumnPixel(char column);; // gives a spot of column
+    template<typename T> T getRowPixel(int row); // gives a spot of column
     int getPieceIndex(QList<pieceOnBoard *> piecesOnBoardList, int x, int y); // gives piece index
     std::pair<int, int> giveCoordinates(char x, int y); // give coordinates as a pair
     void castleFrontent(QList<pieceOnBoard *> piecesOnBoardList, std::pair<int, int> startCoordinates, std::pair<int, int> endCoordinates); // make castle at the frontend
