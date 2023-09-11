@@ -57,6 +57,9 @@ public:
     bool isInCheckMate(Color defendingColor); // check if checkmate
     bool isInStalemate(Color defendingColor); // check if stalemate
 
+    // Destructor
+    //~Board();
+
 private:
     std::map<std::pair<int, int>, std::unique_ptr<Square>> squares; // coordinates of single place on board
     std::vector<std::pair<std::pair<int, int>,std::pair<int, int>>> moves; // list of moves made

@@ -526,6 +526,12 @@ bool Board::movePiece(const std::pair<int, int> &fromCoords, const std::pair<int
 // Check if the move is castling
 bool Board::castle(const Color toMove, const std::pair<int, int> from, const std::pair<int, int> to)
 {
+    // Check if it's the king at the start coordinates
+    if (getKingLocation(toMove) != from)
+    {
+        return false;
+    }
+
     // Get the rook we're going to castle with and intermediate location
     Piece* rook;
     std::pair<int,int> intermediateLocation; // position between rook and king
@@ -818,5 +824,6 @@ void Board::saveMoves()
     outputFile.close();
     qDebug() << "Moves saved to " << filename;
 }
+
 
 
