@@ -197,9 +197,10 @@ bool GameWindow::eventFilter(QObject *obj, QEvent *event)
                             piecesOnBoardList.erase(piecesOnBoardList.begin() + pieceToDeletePosition); // Remove it from the list
                         }
 
+                        // If pawn goes to end there is a promotion
                         if (board.promotePawn(board.getColor(), endCoordinates))
                         {
-                            qDebug() << "PROMOCJA FRONT";
+                            pieceToMove->promotePieceImage(endColumn, endRow, Scene);
                         }
                     }
                     // No valid move

@@ -58,6 +58,15 @@ public:
     int giveYCoord();
 
     /**
+     * @brief Change the image of piece to a queen image.
+     *
+     * @param x The x-coordinate of the piece.
+     * @param y The y-coordinate of the piece.
+     * @param s Pointer to a scene where the piece image should be put.
+     */
+    void promotePieceImage(int x, int y, QGraphicsScene *s);
+
+    /**
      * @brief Delete the image of the piece from the QGraphicsScene.
      */
     void deleteImage();

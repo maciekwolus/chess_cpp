@@ -101,6 +101,31 @@ int pieceOnBoard::giveYCoord()
 };
 
 /**
+ * @brief Change the image of piece to a queen image.
+ *
+ * Function firstly get path to proper image. After that it deletes
+ * old, piece image and make a new queen image.
+ *
+ * @param x The x-coordinate of the piece.
+ * @param y The y-coordinate of the piece.
+ */
+void pieceOnBoard::promotePieceImage(int x, int y, QGraphicsScene *s)
+{
+    QString imageName = QString(":/resources/img/black_queen.png");
+
+    // Change image for white
+    if (y == 8)
+    {
+        imageName = QString(":/resources/img/white_queen.png");
+    }
+
+    deleteImage(); // Delete old image
+    image = new QGraphicsPixmapItem(QPixmap(imageName)); // Declare new image
+    image->setPos(xCoord, yCoord); // Set position of new image
+    s->addItem(image); // Add image to scene
+}
+
+/**
  * @brief Delete the image of the piece from the QGraphicsScene.
  */
 void pieceOnBoard::deleteImage()
