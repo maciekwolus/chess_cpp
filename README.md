@@ -1,4 +1,4 @@
 # chess_cpp
 University project - Chess game
 
-![Alt Text](resources/img/uml_new.png)
+![Alt Text](chess_game/img/uml_new.png)
