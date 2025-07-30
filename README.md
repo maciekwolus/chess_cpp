@@ -1,6 +1,8 @@
 # ♟️ Chess Game in C++ with Qt GUI
 
-This project is a fully functional, GUI-based chess game written in **C++** using the **Qt framework**. It offers a complete chess experience with all standard rules, visual gameplay, and turn-based logic. The application demonstrates strong object-oriented design, modern C++ practices, and clear separation between backend logic and graphical frontend.
+This project is a fully functional, GUI-based chess game written in **C++** using the **Qt framework**. It offers a complete chess experience with all standard rules, visual gameplay, and turn-based logic. The application demonstrates strong object-oriented design, modern C++ practices, and clear separation between backend logic and graphical frontend.![Uploading black_bishop.png…]()
+
+<img width="100" height="100" alt="white_prom" src="https://github.com/user-attachments/assets/607742e7-2f9d-4998-b3d3-d582475fee6a" />
 
 ---
 
